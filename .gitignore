@@ -1,0 +1,34 @@
+# === Node ===
+node_modules/
+dist/
+
+# === Vite ===
+.vite/
+.vitepress/
+
+# === System Files ===
+.DS_Store
+Thumbs.db
+
+# === Logs ===
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# === Environment Variables ===
+.env
+.env.*.local
+
+# === IDE / Editor Settings ===
+.vscode/
+.idea/
+
+# === OS-specific ===
+*.swp
+
+# === Vercel ===
+vercel
+
+# === Optional ===
+package-lock.json  # Uncomment this if you're using Yarn or prefer fresh installs

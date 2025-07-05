@@ -1,0 +1,95 @@
+{
+  "personal": {
+    "name": "Shreyash Bhosale",
+    "role": "Software Developer",
+    "description": "I build secure, scalable backend systems using Node.js, Express.js, and MongoDB.",
+    "avatar": "/avatar.jpg",
+    "location": "Kolhapur, India",
+    "email": "your.email@example.com",
+    "socials": [
+      {
+        "platform": "GitHub",
+        "url": "https://github.com/yourusername"
+      },
+      {
+        "platform": "LinkedIn",
+        "url": "https://linkedin.com/in/yourprofile"
+      },
+      {
+        "platform": "Email",
+        "url": "mailto:your.email@example.com"
+      }
+    ]
+  },
+  "about": {
+    "title": "About Me",
+    "description": "Computer Science graduate specializing in backend development. Passionate about creating efficient server-side solutions and optimizing database performance.",
+    "resume": "/resume.pdf"
+  },
+  "projects": [
+    {
+      "title": "Inventra - Inventory Management",
+      "description": "Full-stack inventory platform with automated product tracking and restocking using Next.js, React, and TypeScript.",
+      "tags": ["Next.js", "Node.js", "PostgreSQL", "Prisma"],
+      "image": "/images/inventra-screenshot.jpg",
+      "url": "https://inventra-demo.com",
+      "github": "https://github.com/dynamicshreyashh/inventra"
+    },
+    {
+      "title": "Wanderlust Travel Hub",
+      "description": "Travel discovery web app with Google Maps API integration and secure JWT authentication.",
+      "tags": ["Node.js", "Express.js", "MongoDB"],
+      "image": "/images/wanderlust-screenshot.jpg",
+      "url": "https://wanderlust-demo.com",
+      "github": "https://github.com/yourusername/wanderlust"
+    },
+    {
+      "title": "AI Virtual Mouse",
+      "description": "Hand gesture-controlled virtual mouse using computer vision and machine learning.",
+      "tags": ["Python", "OpenCV", "TensorFlow"],
+      "image": "/images/ai-mouse-screenshot.jpg",
+      "url": "#",
+      "github": "https://github.com/yourusername/ai-virtual-mouse"
+    }
+  ],
+  "skills": [
+    { "name": "Node.js" },
+    { "name": "Express.js" },
+    { "name": "MongoDB" },
+    { "name": "PostgreSQL" },
+    { "name": "JavaScript" },
+    { "name": "TypeScript" },
+    { "name": "REST APIs" },
+    { "name": "Git" },
+    { "name": "Docker" },
+    { "name": "AWS" },
+    { "name": "Postman" },
+    { "name": "Firebase" }
+  ],
+  "experience": [
+    {
+      "company": "Sinek Marketing Technology, Kolhapur",
+      "role": "Full Stack Developer",
+      "startDate": "202X",
+      "endDate": "Present",
+      "responsibilities": [
+        "Engineered Firebase database for real-time event management",
+        "Optimized backend processes with Node.js/Express.js (30% performance improvement)",
+        "Designed React front-end interfaces (20% UX improvement)",
+        "Developed interactive dashboards for event performance analysis"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "D Y Patil College Of Engineering and Technology, Kolhapur",
+      "degree": "B.Tech in Computer Science & Engineering",
+      "year": "20XX - 20XX"
+    }
+  ],
+  "certifications": [
+    "Accenture UK Developer and Technology Completion",
+    "Walmart Global Tech Advanced Software Engineering Virtual Experience",
+    "AWS Virtual Internship Completion (AICTE)"
+  ]
+}
