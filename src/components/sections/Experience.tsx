@@ -1,40 +1,71 @@
 import { EXPERIENCE } from '../../config/constants';
-//import { useRouter } from 'next/router'; // Optional, only if you're using Next.js routing
+import { motion } from 'framer-motion';
+import { Briefcase } from 'lucide-react'; // you can replace with any icon set
 
 export default function Experience() {
   return (
-    <section id="experience" className="py-20 bg-white">
+    <section id="experience" className="py-20 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
       <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12">Work Experience</h2>
+        
+        {/* Heading */}
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-4xl font-extrabold text-center mb-16 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent"
+        >
+          Work Experience
+        </motion.h2>
 
-        <div className="space-y-8">
+        {/* Timeline */}
+        <div className="relative border-l-4 border-blue-500 pl-8 space-y-12">
           {EXPERIENCE.map((exp, index) => (
-            <div key={index} className="border-l-2 border-blue-500 pl-6 relative">
-              <div className="absolute -left-2 top-0 w-4 h-4 bg-blue-500 rounded-full"></div>
-              <div className="pb-6">
-                <h3 className="text-xl font-bold">{exp.position}</h3>
-                <p className="text-gray-600 mb-2">
-                  {exp.company} • {exp.duration}
-                </p>
-                <ul className="list-disc list-inside space-y-2 text-gray-700">
-                  {exp.points.map((point, i) => (
-                    <li key={i}>{point}</li>
-                  ))}
-                </ul>
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              viewport={{ once: true }}
+              className="relative bg-white dark:bg-gray-900 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300"
+            >
+              {/* Icon */}
+              <div className="absolute -left-12 top-6 w-10 h-10 flex items-center justify-center bg-blue-500 text-white rounded-full shadow-md">
+                <Briefcase size={20} />
               </div>
-            </div>
+
+              <h3 className="text-2xl font-semibold">{exp.position}</h3>
+              <p className="text-gray-500 dark:text-gray-400 mb-4">
+                {exp.company} • {exp.duration}
+              </p>
+
+              {/* Points */}
+              <ul className="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
+                {exp.points.map((point, i) => (
+                  <li key={i} className="hover:text-blue-600 transition-colors">
+                    {point}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
           ))}
         </div>
 
         {/* View Work Button */}
-        <div className="text-center mt-12">
-          <a 
-            href="#event-management" 
-            className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition duration-300"
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          viewport={{ once: true }}
+          className="text-center mt-16"
+        >
+          <a
+            href="#projects"
+            className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300"
           >
-          View Work
-           </a>
-        </div>
+            View My Work
+          </a>
+        </motion.div>
       </div>
     </section>
   );

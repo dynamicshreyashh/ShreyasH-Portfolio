@@ -17,19 +17,19 @@ function App() {
     document.title = `${personal.name} - ${personal.role}`;
   }, [personal]);
 
-  const sectionWrapper = (children: JSX.Element, key: string) => (
-    <motion.section
-      key={key}
-      id={key}
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      viewport={{ once: true }}
-      className="py-20 border-b border-gray-200 dark:border-gray-800"
-    >
-      {children}
-    </motion.section>
-  );
+const sectionWrapper = (children: JSX.Element, key: string) => (
+  <motion.section
+    key={key}
+    id={key}
+    initial={{ opacity: 0, y: 60, scale: 0.98 }}
+    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+    transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
+    viewport={{ once: true, amount: 0.2 }}
+    className="py-20 border-b border-gray-200 dark:border-gray-800"
+  >
+    {children}
+  </motion.section>
+);
 
   return (
     <Layout>
