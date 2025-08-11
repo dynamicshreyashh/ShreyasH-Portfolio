@@ -33,7 +33,7 @@ export const EDUCATION = [
     degree: "Bachelor of Computer Engineering",
     institution: "D Y Patil College Of Engineering and Technology, Kolhapur",
     year: "2021 - 2025",
-    grade: "CGPA: 7.45" // Add your actual CGPA here
+    grade: "CGPA: 7.60" // Add your actual CGPA here
   },
   {
     degree: "HSC (12th)",

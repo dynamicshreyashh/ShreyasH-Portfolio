@@ -4,6 +4,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 
 :root {
@@ -14,6 +15,8 @@
   --dark-light: #2D2D2D;
   --light: #F5F5F5;
   --light-dark: #E0E0E0;
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.2);
 }
 
 body {
@@ -28,60 +31,64 @@ body.dark {
   color: var(--light);
 }
 
-/* Custom scrollbar */
+/* Glassmorphism Utility */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem;
+}
+
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
-
 ::-webkit-scrollbar-track {
   background: var(--light-dark);
 }
-
 .dark ::-webkit-scrollbar-track {
   background: var(--dark-light);
 }
-
 ::-webkit-scrollbar-thumb {
   background: var(--primary);
   border-radius: 4px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary-dark);
 }
 
-/* Text selection */
+/* Selection */
 ::selection {
   background: var(--primary);
   color: white;
 }
 
-/* Smooth animations */
+/* Animations */
 .fade-in {
   animation: fadeIn 0.5s ease-in-out;
 }
-
 .slide-up {
   animation: slideUp 0.5s ease-out;
 }
-
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
 @keyframes slideUp {
-  from { 
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to { 
-    transform: translateY(0);
-    opacity: 1;
-  }
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
-/* Utility classes */
+/* Hover Animations */
+.hover-scale {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-scale:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* Gradient Text */
 .text-gradient {
   background: linear-gradient(90deg, var(--primary), var(--secondary));
   -webkit-background-clip: text;
@@ -89,17 +96,17 @@ body.dark {
   color: transparent;
 }
 
-.hover-scale {
-  transition: transform 0.3s ease;
+/* Section spacing */
+.section {
+  padding: 5rem 1rem;
 }
 
-.hover-scale:hover {
-  transform: scale(1.05);
-}
-
-/* Responsive typography */
+/* Responsive */
 @media (max-width: 768px) {
   html {
     font-size: 14px;
+  }
+  .section {
+    padding: 3rem 1rem;
   }
 }

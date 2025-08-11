@@ -64,4 +64,4 @@ export default function About() {
       </div>
     </section>
   );
-}  //this was my about.tsx exsisiting do changes as i said and give me updated one. also add the photo at left side and add description to right side exacly same as the image i have given 
+}  
