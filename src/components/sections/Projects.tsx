@@ -56,7 +56,23 @@ export default function Projects() {
       ],
       image: "/images/Portfolio4.png",
       githubUrl: "https://github.com/dynamicshreyashh/Event-Management-Sytsem"
-    }
+    },  
+    {
+      title: "AI-Powered Code Reviewer",
+      description: "A full-stack AI-based platform that reviews code, detects errors, and provides optimized suggestions using advanced LLMs. Supports syntax analysis, best-practice checking, and real-time improvement feedback for developers.",
+      technologies: ["React", "Node.js", "Express", "MongoDB", "OpenAI API", "Tailwind CSS"],
+      features: [
+       "AI-powered code analysis and suggestions",
+        "Error detection with detailed explanations",
+        "Highlighting of problem lines and fixes",
+        "Secure backend with JWT authentication",
+         "Real-time response using Express.js API",
+       "Clean and responsive UI built with Tailwind CSS"
+  ],
+        image: "/images/ai-code-reviewer.png",
+        githubUrl: "https://github.com/dynamicshreyashh/AI-Powered-Code-Reviewer"
+}
+
   ];
 
   return (
