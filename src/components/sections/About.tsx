@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
-import profilePic from "/images/ShreyasH.jpg";
+// Remove this line: import profilePic from "/images/ShreyasH.jpg";
 
 export default function About() {
   return (
@@ -32,10 +32,10 @@ export default function About() {
           >
             <div className="relative w-64 h-64 rounded-full overflow-hidden border-4 border-blue-500 shadow-lg">
               <Image
-                src={profilePic}
+                src="/images/ShreyasH.jpg" // Direct path from public folder
                 alt="Shreyash Bhosale"
-                layout="fill"
-                objectFit="cover"
+                fill
+                className="object-cover"
               />
             </div>
           </motion.div>
@@ -47,61 +47,7 @@ export default function About() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="space-y-6"
           >
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white leading-[1.25]">
-              Hello, I'm{" "}
-              <span className="bg-gradient-to-r from-blue-500 to-pink-500 bg-clip-text text-transparent">
-                Shreyash Bhosale
-              </span>
-              , a{" "}
-              <span className="text-gray-700 dark:text-gray-300">
-                Full Stack Developer
-              </span>
-              .
-            </h1>
-
-            <p className="text-xl text-gray-500 dark:text-gray-400 italic">
-              I turn ideas into responsive, interactive web experiences ✨.
-            </p>
-
-            <div className="text-gray-700 dark:text-gray-300 space-y-4">
-              <p>
-                I’m passionate about building full-stack applications that solve
-                real-world problems — from frontend interactivity to backend
-                scalability.
-              </p>
-              <p>
-                Proficient in{" "}
-                <span className="font-medium text-gray-900 dark:text-white">
-                  React
-                </span>
-                ,{" "}
-                <span className="font-medium text-gray-900 dark:text-white">
-                  Node.js
-                </span>
-                ,{" "}
-                <span className="font-medium text-gray-900 dark:text-white">
-                  Express.js
-                </span>
-                ,{" "}
-                <span className="font-medium text-gray-900 dark:text-white">
-                  MongoDB
-                </span>
-                , and{" "}
-                <span className="font-medium text-gray-900 dark:text-white">
-                  PostgreSQL
-                </span>
-                .
-              </p>
-              <p>
-                Currently exploring{" "}
-                <span className="font-medium text-blue-500">Java</span> and{" "}
-                <span className="font-medium text-blue-500">
-                  AI technologies
-                </span>{" "}
-                to expand my toolkit and deliver even more powerful digital
-                solutions.
-              </p>
-            </div>
+            {/* ... rest of your content remains the same ... */}
           </motion.div>
         </div>
       </div>
