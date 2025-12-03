@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import Footer from "./Footer";
 import { motion } from "framer-motion";
-import { Helmet } from "react-helmet-async"; // ✅ Replaces next/head
+import { Helmet } from "react-helmet-async";
 
 interface LayoutProps {
   children: ReactNode;
