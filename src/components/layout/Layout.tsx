@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import Footer from "./Footer";
 import { motion } from "framer-motion";
-import Head from "next/head";
+import { Helmet } from "react-helmet-async"; // ✅ Replaces next/head
 
 interface LayoutProps {
   children: ReactNode;
@@ -36,14 +36,17 @@ export const Layout = ({
 
   return (
     <div className={`min-h-screen flex flex-col ${darkMode ? "dark" : ""}`}>
-      <Head>
+      {/* ✅ Helmet replaces Next.js Head */}
+      <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
+
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:type" content="website" />
+
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </Helmet>
 
       {/* Navbar */}
       <nav className="sticky top-0 z-50 bg-white dark:bg-dark shadow-sm transition-colors duration-300">
@@ -51,18 +54,22 @@ export const Layout = ({
           <h1 className="text-lg font-bold text-gray-800 dark:text-white">
             Shreyash Bhosale
           </h1>
+
           <ul className="hidden md:flex space-x-6 text-gray-600 dark:text-gray-300">
-            {["Home", "Skills", "Projects", "Experience", "Education", "Contact"].map((section) => (
-              <li key={section}>
-                <a
-                  href={`#${section.toLowerCase()}`}
-                  className="hover:text-primary transition-colors"
-                >
-                  {section}
-                </a>
-              </li>
-            ))}
+            {["Home", "Skills", "Projects", "Experience", "Education", "Contact"].map(
+              (section) => (
+                <li key={section}>
+                  <a
+                    href={`#${section.toLowerCase()}`}
+                    className="hover:text-primary transition-colors"
+                  >
+                    {section}
+                  </a>
+                </li>
+              )
+            )}
           </ul>
+
           <button
             onClick={() => setDarkMode(!darkMode)}
             className="p-2 rounded-full border border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
@@ -83,6 +90,7 @@ export const Layout = ({
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {children}
         </div>
+
         <Footer />
       </motion.main>
     </div>
