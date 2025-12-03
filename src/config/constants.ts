@@ -17,13 +17,12 @@ export const SOCIAL_LINKS = [
 export const EXPERIENCE = [
   {
     company: 'Sinek Marketing Technology, Kolhapur',
-    position: 'Full Stack Developer',
-    duration: 'June 2024 - July 2024',
+    position: 'Software Developer Intern',
+    duration: 'June 2024 - August 2024',
     points: [
-      'Designed a firebase database to manage events, ensuring real-time live event updates and insights.',
-      'Optimized Node.js/Express.js APIs, reducing server response time by 30% and increasing system throughput.',
-      'Increased admin team productivity by 20% by building React dashboards with real-time charts and filtering tools.',
-      'Automated event analytics reporting, cutting manual planning time by 15% for marketing teams.'
+      'Engineered a full-stack Event Management System using the MERN stack enabling administrators to create, update, and monitor corporate events seamlessly.',
+      'Integrated Firebase Realtime Database to synchronize event status and participant counts across clients, ensuring users received instant updates without manual page refreshes.',
+      'Developed a secure Admin Dashboard with client-side form validation and Role-Based Access Control (RBAC), streamlining the event scheduling workflow and minimizing data entry errors.'
     ]
   }
 ];

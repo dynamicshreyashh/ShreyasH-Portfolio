@@ -40,7 +40,7 @@
       "description": "Travel discovery web app with Google Maps API integration and secure JWT authentication.",
       "tags": ["Node.js", "Express.js", "MongoDB"],
       "image": "/images/wanderlust-screenshot.jpg",
-      "url": "https://wanderlust-demo.com",
+      "url": "",
       "github": "https://github.com/yourusername/wanderlust"
     },
     {

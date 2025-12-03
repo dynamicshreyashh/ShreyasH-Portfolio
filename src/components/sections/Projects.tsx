@@ -14,97 +14,144 @@ export default function Projects() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   const projects: Project[] = [
-    {
-      title: "Inventra – Inventory Management",
-      description:
-        "Full-stack inventory management platform for sales and expenses with web scraping.",
-      technologies: [
-        "Next.js",
-        "React",
-        "TypeScript",
-        "Node.js",
-        "Express.js",
-        "PostgreSQL",
-        "Prisma",
-      ],
-      features: [
-        "Automated product tracking and restocking",
-        "Responsive admin dashboards",
-        "Secure backend APIs",
-        "Web scraping integration",
-      ],
-      image: "/images/Portfolio1.jpg",
-      githubUrl: "https://github.com/dynamicshreyashh/Inventra",
-    },
-    {
-      title: "Wanderlust Travel Hub",
-      description:
-        "Travel discovery web app with Google Maps API integration and secure authentication system.",
-      technologies: ["Node.js", "Express.js", "MongoDB", "Google Maps API"],
-      features: [
-        "Interactive destination exploration",
-        "Real-time location insights",
-        "Secure JWT authentication",
-        "Responsive EJS templates",
-      ],
-      image: "/images/Portfolio2.webp",
-      githubUrl:
-        "https://github.com/dynamicshreyashh/WanderLust-Travel-Platform",
-    },
-    {
-      title: "AI Virtual Mouse",
-      description:
-        "Hand gesture-controlled virtual mouse using computer vision and machine learning.",
-      technologies: ["Python", "OpenCV", "TensorFlow", "Tkinter"],
-      features: [
-        "Real-time hand detection",
-        "Gesture recognition",
-        "Customizable cursor controls",
-        "User-friendly interface",
-      ],
-      image: "/images/Portfolio3.webp",
-      githubUrl: "https://github.com/dynamicshreyashh/Ai-Virtual-Mouse-",
-    },
-    {
-      title: "Event Management System",
-      description:
-        "A React-based web application for organizing, managing, and booking events with Firebase-powered backend and authentication.",
-      technologies: ["React", "Firebase", "CSS"],
-      features: [
-        "User authentication with Firebase",
-        "Event creation and management",
-        "Responsive design with CSS",
-        "User-friendly Event interface",
-      ],
-      image: "/images/Portfolio4.png",
-      githubUrl:
-        "https://github.com/dynamicshreyashh/Event-Management-Sytsem",
-    },
-    {
-      title: "AI-Powered Code Reviewer",
-      description:
-        "A full-stack AI-based platform that reviews code, detects errors, and provides optimized suggestions using advanced LLMs. Supports syntax analysis, best-practice checking, and real-time improvement feedback for developers.",
-      technologies: [
-        "React",
-        "Node.js",
-        "Express",
-        "MongoDB",
-        "OpenAI API",
-        "Tailwind CSS",
-      ],
-      features: [
-        "AI-powered code analysis and suggestions",
-        "Error detection with detailed explanations",
-        "Highlighting of problem lines and fixes",
-        "Secure backend with JWT authentication",
-        "Real-time response using Express.js API",
-        "Clean and responsive UI built with Tailwind CSS",
-      ],
-      image: "/images/ai-code-reviewer.png",
-      githubUrl:
-        "https://github.com/dynamicshreyashh/AI-Powered-Code-Reviewer",
-    },
-  ];
+  {
+    title: "CareerConnect – Job Recruitment Platform",
+    description:
+      "A dual-interface MERN platform where recruiters post vacancies and students apply for jobs in real time. Features secure role-based authentication and optimized database search performance.",
+    technologies: [
+      "React",
+      "Node.js",
+      "Express.js",
+      "MongoDB",
+      "JWT",
+      "REST APIs"
+    ],
+    features: [
+      "Student + Recruiter dual interfaces",
+      "JWT authentication with httpOnly cookies",
+      "Role-based authorization (Recruiter/Student)",
+      "Optimized MongoDB compound indexes",
+      "Real-time application tracking",
+    ],
+    image: "/images/careerconnect.png", 
+    githubUrl: "https://github.com/dynamicshreyashh/CareerConnect"
+  },
+
+  {
+    title: "Natours App – Tour Booking Platform",
+    description:
+      "A secure tour booking platform using JWT authentication, role-based access control, integrated Stripe payments, and geospatial tour discovery.",
+    technologies: [
+      "Node.js",
+      "Express.js",
+      "MongoDB",
+      "Mongoose",
+      "JWT",
+      "Stripe API"
+    ],
+    features: [
+      "JWT-based authentication & RBAC",
+      "Stripe-powered online payments",
+      "Booking confirmations & email flows",
+      "Geospatial location-based tour search",
+      "Admin dashboard for managing tours"
+    ],
+    image: "/images/natours.png",
+    githubUrl: "https://github.com/dynamicshreyashh/Natours"
+  },
+
+  {
+    title: "AI Code Reviewer – Automated Code Analysis",
+    description:
+      "A web-based debugging assistant that uses LLMs to detect issues, provide fixes, and generate structured bug reports with clean syntax-highlighted output.",
+    technologies: [
+      "React",
+      "Node.js",
+      "Express.js",
+      "MongoDB",
+      "Groq API",
+      "Tailwind CSS"
+    ],
+    features: [
+      "AI-driven error detection and suggestions",
+      "Structured bug reports from AI responses",
+      "Syntax-highlighting editor with Markdown support",
+      "Automatic fix generation",
+      "Fast response powered by Groq LLMs"
+    ],
+    image: "/images/ai-code-reviewer.png",
+    githubUrl: "https://github.com/dynamicshreyashh/AI-Powered-Code-Reviewer"
+  },
+
+
+  {
+    title: "Inventra – Inventory Management",
+    description:
+      "Full-stack inventory management system with automated restocking logic and web scraping for real-time product data.",
+    technologies: [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Node.js",
+      "Express.js",
+      "PostgreSQL",
+      "Prisma"
+    ],
+    features: [
+      "Automated product tracking",
+      "Admin dashboards",
+      "Secure backend APIs",
+      "Web scraping integration"
+    ],
+    image: "/images/Portfolio1.jpg",
+    githubUrl: "https://github.com/dynamicshreyashh/Inventra"
+  },
+
+  {
+    title: "Wanderlust Travel Hub",
+    description:
+      "A travel discovery platform with Google Maps API and secure authentication, allowing users to explore destinations interactively.",
+    technologies: ["Node.js", "Express.js", "MongoDB", "Google Maps API"],
+    features: [
+      "Interactive maps",
+      "Real-time location insights",
+      "JWT authentication",
+      "Responsive UI"
+    ],
+    image: "/images/Portfolio2.webp",
+    githubUrl: "https://github.com/dynamicshreyashh/WanderLust-Travel-Platform"
+  },
+
+  {
+    title: "AI Virtual Mouse",
+    description:
+      "Gesture-controlled virtual mouse built with machine learning and real-time hand detection using computer vision.",
+    technologies: ["Python", "OpenCV", "TensorFlow", "Tkinter"],
+    features: [
+      "Real-time hand tracking",
+      "Gesture recognition",
+      "Custom cursor controls",
+      "User-friendly interface"
+    ],
+    image: "/images/Portfolio3.webp",
+    githubUrl: "https://github.com/dynamicshreyashh/Ai-Virtual-Mouse-"
+  },
+
+  {
+    title: "Event Management System",
+    description:
+      "A React + Firebase powered platform for organizing and managing events with real-time updates and user authentication.",
+    technologies: ["React", "Firebase", "CSS"],
+    features: [
+      "Firebase authentication",
+      "Event creation and management",
+      "Real-time updates",
+      "Responsive UI"
+    ],
+    image: "/images/Portfolio4.png",
+    githubUrl: "https://github.com/dynamicshreyashh/Event-Management-Sytsem"
+  }
+];
 
   return (
     <section
