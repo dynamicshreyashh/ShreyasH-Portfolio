@@ -57,7 +57,7 @@ export default function Projects() {
       "Admin dashboard for managing tours"
     ],
     image: "/images/natours.png",
-    githubUrl: "https://github.com/dynamicshreyashh/Natours"
+    githubUrl: "https://github.com/dynamicshreyashh/Natours-App1"
   },
 
   {
