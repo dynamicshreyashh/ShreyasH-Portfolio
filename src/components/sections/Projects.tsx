@@ -38,6 +38,29 @@ export default function Projects() {
   },
 
   {
+  title: "AI Ecommerce ChatBot",
+  description:
+    "An intelligent shopping assistant that enhances user experience by providing instant product recommendations, answering queries, and guiding users through the sales funnel.",
+  technologies: [
+    "React.js",
+    "Tailwind CSS",
+    "Framer Motion",
+    "Lucide React",
+    "Context API",
+    "REST API"
+  ],
+  features: [
+    "AI-powered conversational interface for product discovery",
+    "Dynamic message rendering with smooth Framer Motion animations",
+    "Responsive design optimized for both desktop and mobile users",
+    "Integration-ready architecture for backend AI services",
+    "Interactive UI components for real-time user feedback"
+  ],
+  image: "/images/ecommerce-chatbot.jpg", // Replace with your actual image path
+  githubUrl: "https://github.com/dynamicshreyashh/AI-Ecommerce-ChatBot-Frontend"
+},
+
+  {
     title: "Natours App – Tour Booking Platform",
     description:
       "A secure tour booking platform using JWT authentication, role-based access control, integrated Stripe payments, and geospatial tour discovery.",
@@ -61,28 +84,27 @@ export default function Projects() {
   },
 
   {
-    title: "AI Code Reviewer – Automated Code Analysis",
-    description:
-      "A web-based debugging assistant that uses LLMs to detect issues, provide fixes, and generate structured bug reports with clean syntax-highlighted output.",
-    technologies: [
-      "React",
-      "Node.js",
-      "Express.js",
-      "MongoDB",
-      "Groq API",
-      "Tailwind CSS"
-    ],
-    features: [
-      "AI-driven error detection and suggestions",
-      "Structured bug reports from AI responses",
-      "Syntax-highlighting editor with Markdown support",
-      "Automatic fix generation",
-      "Fast response powered by Groq LLMs"
-    ],
-    image: "/images/ai-code-reviewer.png",
-    githubUrl: "https://github.com/dynamicshreyashh/AI-Powered-Code-Reviewer"
-  },
-
+  title: "Smart Email Assistant",
+  description:
+    "An AI-powered service that analyzes email content to generate context-aware replies in real-time, integrated directly into the Gmail interface.",
+  technologies: [
+    "Java",
+    "Spring Boot",
+    "Google Gemini AI",
+    "Chrome Extension",
+    "JavaScript",
+    "REST API"
+  ],
+  features: [
+    "Real-time AI context-aware reply generation",
+    "Custom Chrome Extension with MutationObserver for DOM injection",
+    "Secure REST API architecture to decouple AI logic",
+    "Handled complex CORS security challenges",
+    "API key protection for backend AI services"
+  ],
+  image: "/images/smart-email.png", // Replace with your actual image path
+  githubUrl: "https://github.com/dynamicshreyashh/Smart-Email-Assistant", // Updated based on your GitHub handle
+},
 
   {
     title: "Inventra – Inventory Management",
