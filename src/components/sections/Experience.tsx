@@ -1,69 +1,128 @@
-import { EXPERIENCE } from '../../config/constants';
-import { motion } from 'framer-motion';
-import { Briefcase } from 'lucide-react'; // you can replace with any icon set
+import React from "react";
+import { motion } from "framer-motion";
+import { Briefcase, Calendar, MapPin, ChevronRight } from "lucide-react";
+
+// Data extracted from your resume
+const EXPERIENCE = [
+  {
+    company: "Sinek Marketing Technology Pvt. Ltd.",
+    position: "Software Developer Intern",
+    duration: "June 2024 — July 2024",
+    location: "Kolhapur, India",
+    points: [
+      "Developed a full-stack Event Management System to facilitate corporate registrations and event scheduling.",
+      "Implemented CRUD operations and data persistence logic to manage participant and event records.",
+      "Designed a responsive web interface focused on user accessibility and intuitive event discovery."
+    ],
+  }
+];
 
 export default function Experience() {
   return (
-    <section id="experience" className="py-20 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
-      <div className="max-w-6xl mx-auto px-4">
+    <section id="experience" className="py-24 bg-white dark:bg-zinc-950 transition-colors duration-300">
+      <div className="max-w-4xl mx-auto px-6">
         
-        {/* Heading */}
-        <motion.h2
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-4xl font-extrabold text-center mb-16 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent"
-        >
-          Work Experience
-        </motion.h2>
+        {/* Header - Matching your theme */}
+        <div className="mb-20">
+          <motion.h2 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-white"
+          >
+            Professional Experience
+          </motion.h2>
+          <div className="h-1.5 w-20 bg-indigo-600 mt-3 rounded-full" />
+        </div>
 
-        {/* Timeline */}
-        <div className="relative border-l-4 border-blue-500 pl-8 space-y-12">
+        {/* Timeline Container */}
+        <div className="relative space-y-12">
+          {/* Vertical Line */}
+          <div className="absolute left-0 md:left-8 top-0 bottom-0 w-px bg-zinc-200 dark:bg-zinc-800" />
+
           {EXPERIENCE.map((exp, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="relative bg-white dark:bg-gray-900 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300"
+              transition={{ duration: 0.5 }}
+              className="relative pl-8 md:pl-20"
             >
-              {/* Icon */}
-              <div className="absolute -left-12 top-6 w-10 h-10 flex items-center justify-center bg-blue-500 text-white rounded-full shadow-md">
-                <Briefcase size={20} />
+              {/* Timeline Node Icon */}
+              <div className="absolute left-[-16px] md:left-4 top-0 w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30 z-10">
+                <Briefcase size={16} />
               </div>
 
-              <h3 className="text-2xl font-semibold">{exp.position}</h3>
-              <p className="text-gray-500 dark:text-gray-400 mb-4">
-                {exp.company} • {exp.duration}
-              </p>
+              {/* Experience Card */}
+              <div className="group bg-zinc-50 dark:bg-zinc-900/50 p-8 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-800 hover:border-indigo-500/50 transition-all duration-300">
+                <div className="flex flex-wrap justify-between items-start gap-4 mb-6">
+                  <div>
+                    <h3 className="text-2xl font-bold text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                      {exp.position}
+                    </h3>
+                    <div className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 font-medium mt-1">
+                      <span className="text-lg">{exp.company}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col items-end text-sm text-zinc-500">
+                    <div className="flex items-center gap-2 bg-white dark:bg-zinc-800 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-700">
+                      <Calendar size={14} className="text-indigo-500" />
+                      {exp.duration}
+                    </div>
+                    <div className="flex items-center gap-1 mt-2 mr-2">
+                      <MapPin size={14} />
+                      {exp.location}
+                    </div>
+                  </div>
+                </div>
 
-              {/* Points */}
-              <ul className="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
-                {exp.points.map((point, i) => (
-                  <li key={i} className="hover:text-blue-600 transition-colors">
-                    {point}
-                  </li>
-                ))}
-              </ul>
+                {/* Content Points */}
+                <ul className="space-y-4">
+                  {exp.points.map((point, i) => (
+                    <li key={i} className="flex items-start gap-3 text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                      <div className="mt-1.5 min-w-[6px] h-[6px] rounded-full bg-indigo-500" />
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Bottom Decorative Element */}
+                <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+                  <div className="flex gap-2">
+                    <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest bg-zinc-200 dark:bg-zinc-800 rounded-md text-zinc-600 dark:text-zinc-400">
+                      Full-Stack
+                    </span>
+                    <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest bg-zinc-200 dark:bg-zinc-800 rounded-md text-zinc-600 dark:text-zinc-400">
+                      Internship
+                    </span>
+                  </div>
+                  <motion.div 
+                    whileHover={{ x: 5 }}
+                    className="text-indigo-600 dark:text-indigo-400"
+                  >
+                    <ChevronRight size={20} />
+                  </motion.div>
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>
 
-        {/* View Work Button */}
+        {/* Call to Action */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-center mt-16"
+          className="mt-20 text-center"
         >
           <a
             href="#projects"
-            className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300"
+            className="group inline-flex items-center gap-3 bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 px-8 py-4 rounded-2xl font-bold shadow-xl hover:opacity-90 transition-all"
           >
-            View My Work
+            See My Projects
+            <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </a>
         </motion.div>
       </div>

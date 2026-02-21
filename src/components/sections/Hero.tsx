@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
 import { FaGithub, FaLinkedin, FaCode, FaFileAlt } from "react-icons/fa";
 import { HiMail } from "react-icons/hi";
-import { HEADER_DATA } from "../../config/constants";
+import { ArrowRight, Sparkles } from "lucide-react";
+import { HEADER_DATA } from '../../config/constants';
 
-// Animation variants for staggered reveal
 const container = {
   hidden: { opacity: 0 },
   show: {
@@ -11,6 +11,7 @@ const container = {
     transition: { staggerChildren: 0.15 },
   },
 };
+
 const item = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0 },
@@ -18,138 +19,122 @@ const item = {
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center px-4 bg-white dark:bg-dark py-12 overflow-hidden">
-      {/* Floating background blobs */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-pink-400/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-indigo-400/20 rounded-full blur-3xl animate-pulse delay-300"></div>
+    <section className="relative min-h-screen flex flex-col items-center justify-center px-6 bg-white dark:bg-zinc-950 py-20 overflow-hidden">
+      
+      {/* Background: Modern Gradient Blobs from original code */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-1/4 left-[-10%] w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-1/4 right-[-10%] w-[500px] h-[500px] bg-pink-500/10 rounded-full blur-[120px] animate-pulse delay-700" />
       </div>
 
       <motion.div
         variants={container}
         initial="hidden"
         animate="show"
-        className="flex flex-col items-center"
+        className="flex flex-col items-center max-w-4xl w-full"
       >
-        {/* Profile Photo with glow */}
+        {/* Unique Profile Photo: Centered with a "Squircle" Glow */}
         <motion.div
           variants={item}
           whileHover={{ scale: 1.05, rotate: 2 }}
-          className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-primary dark:border-primary-dark shadow-lg shadow-primary/30"
+          className="relative mb-10"
         >
-          <img
-            src="/images/ShreyasH.jpg"
-            alt="Shreyash Bhosale"
-            className="w-full h-full object-cover"
-          />
+          <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 rounded-[3rem] blur-2xl opacity-40 animate-pulse" />
+          <div className="relative w-36 h-36 md:w-48 md:h-48 rounded-[3rem] overflow-hidden border-4 border-white dark:border-zinc-900 shadow-2xl bg-zinc-100 dark:bg-zinc-800">
+            <img
+              src="/images/ShreyasH.jpg"
+              alt="Shreyash Bhosale"
+              className="w-full h-full object-cover"
+            />
+          </div>
         </motion.div>
 
-        {/* Intro Text */}
-        <motion.p
+        {/* Intro Badge */}
+        <motion.div 
           variants={item}
-          className="font-mono text-gray-500 dark:text-gray-400 mt-6"
+          className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 mb-6"
         >
-          HELLO, I'M
-        </motion.p>
+          <Sparkles size={14} className="text-indigo-500" />
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">
+            Full-Stack Developer
+          </span>
+        </motion.div>
 
+        {/* Name: Bold Gradient from Original Code */}
         <motion.h1
           variants={item}
-          className="text-4xl md:text-5xl font-bold mb-2 text-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent"
+          className="text-5xl md:text-8xl font-black mb-6 text-center tracking-tighter"
         >
-          Shreyash Bhosale
+          <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+            Shreyash Bhosale
+          </span>
         </motion.h1>
 
-        <motion.h2
-          variants={item}
-          className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 text-center"
-        >
-          Software Developer
-        </motion.h2>
-
-        {/* Tagline */}
+        {/* The Requested Tagline */}
         <motion.p
           variants={item}
-          className="text-center text-base md:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-10 leading-relaxed"
+          className="text-center text-lg md:text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto mb-12 leading-relaxed font-medium"
         >
-          I design digital experiences that are{" "}
-          <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent font-semibold">
-            fast, accessible, and human-centered
-          </span>{" "}
-          — blending creativity with logic to solve real-world problems through{" "}
-          <span className="text-indigo-500 font-medium">clean code</span>, clear thinking, and{" "}
-          <span className="text-pink-500 font-medium">intentional impact</span>.
+          "I like <span className="text-indigo-500 font-bold">starting from a blank slate</span> and turning it into a finished product. 
+          From frontend and backend to deployment, I focus on building software that's 
+          <span className="text-zinc-900 dark:text-white"> practical, usable, and reliable.</span>"
         </motion.p>
 
-        {/* Action Buttons */}
+        {/* Action Buttons: Unified Modern Style */}
         <motion.div
           variants={item}
-          className="flex flex-wrap justify-center gap-4 mb-12"
+          className="flex flex-wrap justify-center gap-4 mb-16"
         >
           <motion.button
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ y: -4 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() =>
-              document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
-            }
-            className="flex items-center px-6 py-3 bg-primary dark:bg-primary-dark text-white rounded-lg hover:bg-opacity-90 transition-all group"
+            onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+            className="flex items-center gap-2 px-8 py-4 bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 rounded-2xl font-bold shadow-xl transition-all"
           >
-            <HiMail className="mr-2" />
+            <HiMail size={20} />
             Contact Me
           </motion.button>
 
           <motion.a
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ y: -4 }}
             href="#projects"
-            className="flex items-center px-6 py-3 border-2 border-primary dark:border-primary-dark text-primary dark:text-primary-dark rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
+            className="flex items-center gap-2 px-8 py-4 border-2 border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white rounded-2xl font-bold hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all"
           >
-            <FaCode className="mr-2" />
+            <FaCode size={18} />
             View Work
           </motion.a>
 
           <motion.a
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ y: -4 }}
             href="/images/Shreyash_Bhosale_BTech_CSE.pdf"
             target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center px-6 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
+            className="flex items-center gap-2 px-8 py-4 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white rounded-2xl font-bold transition-all"
           >
-            <FaFileAlt className="mr-2" />
-            View Resume
+            <FaFileAlt size={18} />
+            Resume
           </motion.a>
         </motion.div>
 
-        {/* Social Links */}
+        {/* Colorful Social Links */}
         <motion.div
           variants={item}
-          className="flex gap-6"
+          className="flex gap-8"
         >
-          <a
-            href={HEADER_DATA.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary-dark transition-colors"
-            aria-label="GitHub"
-          >
-            <FaGithub className="w-6 h-6" />
-          </a>
-          <a
-            href={HEADER_DATA.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary-dark transition-colors"
-            aria-label="LinkedIn"
-          >
-            <FaLinkedin className="w-6 h-6" />
-          </a>
-          <a
-            href={`mailto:${HEADER_DATA.email}`}
-            className="text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary-dark transition-colors"
-            aria-label="Email"
-          >
-            <HiMail className="w-6 h-6" />
-          </a>
+          {[
+            { icon: <FaGithub size={24} />, link: HEADER_DATA.github, color: "hover:text-indigo-500" },
+            { icon: <FaLinkedin size={24} />, link: HEADER_DATA.linkedin, color: "hover:text-purple-500" },
+            { icon: <HiMail size={26} />, link: `mailto:${HEADER_DATA.email}`, color: "hover:text-pink-500" }
+          ].map((social, i) => (
+            <a
+              key={i}
+              href={social.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`text-zinc-400 ${social.color} transition-all duration-300 transform hover:scale-125`}
+            >
+              {social.icon}
+            </a>
+          ))}
         </motion.div>
       </motion.div>
     </section>
