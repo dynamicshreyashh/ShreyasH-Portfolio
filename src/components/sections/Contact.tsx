@@ -9,7 +9,7 @@ const CONTACT_INFO = {
   email: "shreyashbhosale078@gmail.com",
   phone: "+91 7276690515",
   github: "https://github.com/dynamicshreyashh",
-  linkedin: "https://linkedin.com/in/shreyashbhosale",
+  linkedin: "https://www.linkedin.com/in/shreyash-5a7726245/",
   location: "Pune, Maharashtra"
 };
 
@@ -51,7 +51,7 @@ export default function Contact() {
               { 
                 icon: <FaLinkedin className="text-xl" />, 
                 label: "LinkedIn", 
-                value: "shreyashbhosale", 
+                value: "shreyash-5a7726245/", 
                 link: CONTACT_INFO.linkedin 
               },
               { 
