@@ -18,8 +18,12 @@ import {
   Mail,
   MapPin,
   Menu,
+  Play,
+  Power,
   ServerCog,
   Terminal,
+  Volume2,
+  VolumeX,
   X,
 } from "lucide-react";
 import "./App.css";
@@ -124,6 +128,9 @@ function App() {
   const [scrolled, setScrolled] = useState(false);
   const [progress, setProgress] = useState(0);
   const [pointer, setPointer] = useState({ x: 0, y: 0 });
+  const [introOpen, setIntroOpen] = useState(true);
+  const [bootProgress, setBootProgress] = useState(0);
+  const [soundOn, setSoundOn] = useState(false);
 
   useEffect(() => {
     document.title = "Shreyash Bhosale — Java Full-Stack Developer";
@@ -136,6 +143,20 @@ function App() {
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    if (!introOpen) return;
+    const bootTimer = window.setInterval(() => {
+      setBootProgress((value) => Math.min(value + 4, 100));
+    }, 95);
+    const autoEnterTimer = window.setTimeout(() => {
+      setIntroOpen(false);
+    }, 5200);
+    return () => {
+      window.clearInterval(bootTimer);
+      window.clearTimeout(autoEnterTimer);
+    };
+  }, [introOpen]);
 
   useEffect(() => {
     const sections = ["about", "projects", "systems", "experience", "contact"]
@@ -161,6 +182,11 @@ function App() {
     setPointer({ x: event.clientX, y: event.clientY });
   };
 
+  const enterExperience = (withSound = false) => {
+    setSoundOn(withSound);
+    setIntroOpen(false);
+  };
+
   const activeProject = projects[selectedProject];
 
   return (
@@ -172,6 +198,55 @@ function App() {
       <div className="cursor-glow" aria-hidden="true" />
       <div className="noise-layer" aria-hidden="true" />
       <div className="progress-line" style={{ width: progress + "%" }} aria-hidden="true" />
+
+      <AnimatePresence>
+        {introOpen && (
+          <motion.div
+            className="intro-screen"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, scale: 1.03, filter: "blur(10px)" }}
+            transition={{ duration: 0.7, ease: "easeInOut" }}
+          >
+            <div className="intro-stars" aria-hidden="true" />
+            <div className="intro-scanlines" aria-hidden="true" />
+            <div className="intro-shell">
+              <div className="intro-topline">
+                <span><span className="live-dot" /> SHREYASH / OS</span>
+                <span>portfolio build 01.25</span>
+              </div>
+              <div className="intro-layout">
+                <div className="intro-copy">
+                  <p className="intro-overline">A SMALL DIGITAL UNIVERSE BY SHREYASH BHOSALE</p>
+                  <h1>Welcome to<br /><em>the build.</em></h1>
+                  <p className="intro-message">A Java engineer’s portfolio, booting up. Expect systems, experiments, and a little signal in the noise.</p>
+                  <div className="intro-terminal">
+                    <span><b>$</b> initialize --experience</span>
+                    <span className="terminal-dim">loading interface / api / systems lab</span>
+                    <span className="terminal-ok"><Check size={12} /> environment ready</span>
+                  </div>
+                </div>
+                <div className="intro-core" aria-hidden="true">
+                  <div className="core-rings"><span /><span /><span /></div>
+                  <div className="core-mark"><Power size={22} /><b>SB</b></div>
+                  <div className="core-label label-top">JAVA / AI / SYSTEMS</div>
+                  <div className="core-label label-bottom">PRESS ENTER TO CONNECT</div>
+                </div>
+              </div>
+              <div className="intro-bottom">
+                <div className="boot-meter">
+                  <div className="boot-meter-label"><span>boot sequence</span><b>{String(bootProgress).padStart(3, "0")}%</b></div>
+                  <div className="boot-track"><span style={{ width: bootProgress + "%" }} /></div>
+                </div>
+                <div className="intro-actions">
+                  <button className="button button-primary intro-enter" onClick={() => enterExperience(true)}><Play size={14} fill="currentColor" /> Enter with theme</button>
+                  <button className="intro-skip" onClick={() => enterExperience(false)}>skip intro <ArrowUpRight size={13} /></button>
+                </div>
+              </div>
+              <p className="intro-footnote">soundtrack available · click enter to start audio · auto-entry in a few seconds</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <header className={"topbar " + (scrolled ? "is-scrolled" : "")}>
         <button className="brand-mark" onClick={() => scrollTo("home")} aria-label="Back to top">
@@ -279,6 +354,27 @@ function App() {
       </main>
 
       <footer className="footer page-width"><span>© {new Date().getFullYear()} SHREYASH BHOSALE</span><span>JAVA / SYSTEMS / AI</span><a href="#home" onClick={(event) => { event.preventDefault(); scrollTo("home"); }}>back to top <ArrowUpRight size={14} /></a></footer>
+
+      <AnimatePresence>
+        {soundOn && (
+          <motion.div className="music-dock" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 18 }}>
+            <iframe
+              className="music-iframe"
+              title="Portfolio theme music"
+              src="https://www.youtube-nocookie.com/embed/Z5D-35D7eXE?autoplay=1&loop=1&playlist=Z5D-35D7eXE&controls=0&modestbranding=1&rel=0&playsinline=1"
+              allow="autoplay; encrypted-media"
+            />
+            <span className="music-eq"><i /><i /><i /><i /></span>
+            <span className="music-label"><b>theme / live</b><small>background signal</small></span>
+            <button className="music-toggle" onClick={() => setSoundOn(false)} aria-label="Turn theme music off"><Volume2 size={16} /></button>
+          </motion.div>
+        )}
+        {!soundOn && !introOpen && (
+          <motion.button className="music-reopen" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} onClick={() => setSoundOn(true)} aria-label="Turn theme music on">
+            <VolumeX size={16} /><span>theme</span>
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
