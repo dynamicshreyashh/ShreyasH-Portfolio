@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, MouseEvent as ReactMouseEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -120,6 +120,136 @@ const experience = [
     bullets: ["200+ DSA problems solved on LeetCode", "Oracle Cloud Infrastructure 2025 — AI Foundations Associate", "300+ GitHub contributions across 26+ public repositories"],
   },
 ];
+
+const systemNodes = Array.from({ length: 56 }, (_, index) => {
+  const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+  const y = 1 - (index / 55) * 2;
+  const radius = Math.sqrt(1 - y * y);
+  const theta = goldenAngle * index;
+
+  return {
+    x: Math.cos(theta) * radius,
+    y,
+    z: Math.sin(theta) * radius,
+    size: 1.2 + (index % 4) * 0.45,
+  };
+});
+
+function SystemsCore({ pointer }: { pointer: { x: number; y: number } }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const pointerRef = useRef(pointer);
+  pointerRef.current = pointer;
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    let animationFrame = 0;
+    let width = 0;
+    let height = 0;
+    let rotation = 0;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const resize = () => {
+      const bounds = canvas.getBoundingClientRect();
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      width = bounds.width;
+      height = bounds.height;
+      canvas.width = Math.max(1, Math.floor(width * pixelRatio));
+      canvas.height = Math.max(1, Math.floor(height * pixelRatio));
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    };
+
+    const draw = () => {
+      const currentPointer = pointerRef.current;
+      const centerX = width / 2 + Math.max(-1, Math.min(1, (currentPointer.x - window.innerWidth / 2) / window.innerWidth)) * 16;
+      const centerY = height / 2 + Math.max(-1, Math.min(1, (currentPointer.y - window.innerHeight / 2) / window.innerHeight)) * 10;
+      const radius = Math.min(width, height) * 0.34;
+      const tilt = Math.max(-1, Math.min(1, (currentPointer.y - window.innerHeight / 2) / window.innerHeight)) * 0.16;
+      const projected = systemNodes.map((node) => {
+        const angle = rotation + (currentPointer.x - window.innerWidth / 2) / window.innerWidth * 0.2;
+        const rotatedX = node.x * Math.cos(angle) - node.z * Math.sin(angle);
+        const rotatedZ = node.x * Math.sin(angle) + node.z * Math.cos(angle);
+        const rotatedY = node.y * Math.cos(tilt) - rotatedZ * Math.sin(tilt);
+        const depth = node.y * Math.sin(tilt) + rotatedZ * Math.cos(tilt);
+        return {
+          x: centerX + rotatedX * radius,
+          y: centerY + rotatedY * radius,
+          z: depth,
+          size: node.size,
+        };
+      });
+
+      context.clearRect(0, 0, width, height);
+      const glow = context.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius * 1.25);
+      glow.addColorStop(0, "rgba(167, 243, 107, .12)");
+      glow.addColorStop(0.5, "rgba(125, 211, 252, .045)");
+      glow.addColorStop(1, "rgba(8, 10, 12, 0)");
+      context.fillStyle = glow;
+      context.fillRect(0, 0, width, height);
+
+      context.save();
+      context.translate(centerX, centerY);
+      context.rotate(-0.22);
+      context.strokeStyle = "rgba(167, 243, 107, .18)";
+      context.lineWidth = 1;
+      context.setLineDash([2, 7]);
+      context.beginPath();
+      context.ellipse(0, 0, radius * 1.17, radius * 0.36, 0, 0, Math.PI * 2);
+      context.stroke();
+      context.strokeStyle = "rgba(125, 211, 252, .15)";
+      context.setLineDash([]);
+      context.beginPath();
+      context.ellipse(0, 0, radius * 0.8, radius * 1.22, 0, 0, Math.PI * 2);
+      context.stroke();
+      context.restore();
+
+      for (let index = 0; index < projected.length; index += 1) {
+        const point = projected[index];
+        const next = projected[(index + 7) % projected.length];
+        if (point.z > -0.12 && next.z > -0.12) {
+          context.beginPath();
+          context.moveTo(point.x, point.y);
+          context.lineTo(next.x, next.y);
+          context.strokeStyle = `rgba(167, 243, 107, ${0.04 + Math.max(point.z, next.z) * 0.08})`;
+          context.lineWidth = 0.7;
+          context.stroke();
+        }
+      }
+
+      projected
+        .slice()
+        .sort((a, b) => a.z - b.z)
+        .forEach((point) => {
+          const alpha = 0.28 + (point.z + 1) * 0.34;
+          context.beginPath();
+          context.arc(point.x, point.y, point.size * (0.78 + (point.z + 1) * 0.25), 0, Math.PI * 2);
+          context.fillStyle = point.z > 0.15 ? `rgba(167, 243, 107, ${alpha})` : `rgba(125, 211, 252, ${alpha * 0.58})`;
+          context.shadowColor = point.z > 0.15 ? "rgba(167, 243, 107, .7)" : "rgba(125, 211, 252, .45)";
+          context.shadowBlur = point.z > 0.35 ? 8 : 3;
+          context.fill();
+        });
+      context.shadowBlur = 0;
+
+      if (!reducedMotion) rotation += 0.0035;
+      animationFrame = window.requestAnimationFrame(draw);
+    };
+
+    resize();
+    const resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(canvas);
+    draw();
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+      resizeObserver.disconnect();
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="systems-core-canvas" aria-hidden="true" />;
+}
 
 function App() {
   const [activeSection, setActiveSection] = useState("about");
@@ -294,6 +424,7 @@ function App() {
             <motion.div className="hero-visual" initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1, delay: 0.15 }}>
               <div className="visual-header"><span><span className="live-dot" /> system map / live</span><span>v.2025—now</span></div>
               <div className="portrait-stage">
+                <SystemsCore pointer={pointer} />
                 <div className="orbit orbit-one" /><div className="orbit orbit-two" />
                 <div className="portrait-card"><img src="/images/ShreyasH.jpg" alt="Shreyash Bhosale" /><span className="portrait-label">SHREYASH<br /><b>BHOSALE</b></span></div>
                 <span className="orbit-tag tag-one">JAVA / API</span><span className="orbit-tag tag-two">AI / RAG</span><span className="orbit-tag tag-three">SYSTEMS</span>
