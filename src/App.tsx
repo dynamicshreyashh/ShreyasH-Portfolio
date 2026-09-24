@@ -97,6 +97,13 @@ const projects: Project[] = [
   },
 ];
 
+const projectNodePositions = [
+  { left: "17%", top: "51%", depth: "34px" },
+  { left: "38%", top: "20%", depth: "96px" },
+  { left: "67%", top: "24%", depth: "68px" },
+  { left: "82%", top: "62%", depth: "18px" },
+];
+
 const stackGroups = [
   { label: "Backend", icon: ServerCog, items: ["Java", "Spring Boot", "Spring Security", "REST APIs", "JPA / Hibernate"] },
   { label: "Data & systems", icon: Database, items: ["MySQL", "Redis Streams", "SQL", "Kafka (learning)", "Event-driven design"] },
@@ -449,6 +456,24 @@ function App() {
 
         <section className="section section-projects page-width" id="projects">
           <div className="section-heading heading-split"><div><span className="section-index">02</span><div><p className="section-kicker">SELECTED WORK / SHIPPED</p><h2>Small products.<br /><span>Serious systems thinking.</span></h2></div></div><p className="heading-note">A few places where I went beyond making the feature work—and started asking how it behaves under pressure.</p></div>
+          <div className="project-space">
+            <div className="project-space-topline"><span><span className="live-dot" /> project architecture / interactive map</span><span>{String(projects.length).padStart(2, "0")} nodes · choose a system</span></div>
+            <div className="project-constellation">
+              <div className="constellation-grid" aria-hidden="true" />
+              <span className="constellation-line line-a" aria-hidden="true" />
+              <span className="constellation-line line-b" aria-hidden="true" />
+              <span className="constellation-line line-c" aria-hidden="true" />
+              <span className="constellation-line line-d" aria-hidden="true" />
+              <div className="constellation-core" aria-hidden="true"><span /><b>SB</b><small>systems<br />in motion</small></div>
+              {projects.map((project, index) => {
+                const node = projectNodePositions[index];
+                return <button key={project.title} className={"project-node " + (selectedProject === index ? "is-selected" : "")} onClick={() => setSelectedProject(index)} style={{ "--node-left": node.left, "--node-top": node.top, "--node-depth": node.depth, "--node-accent": project.accent } as CSSProperties} aria-label={"Inspect " + project.title}>
+                  <span className="project-node-ring" aria-hidden="true" /><span className="project-node-number">0{index + 1}</span><span className="project-node-name">{project.title}</span><span className="project-node-type">{project.kicker.split(" / ")[0]}</span>
+                </button>;
+              })}
+            </div>
+            <div className="project-space-footer"><span>drag your attention through the graph</span><span className="project-space-active"><i /> selected: {projects[selectedProject].title}</span></div>
+          </div>
           <div className="projects-layout">
             <div className="project-index" role="tablist" aria-label="Selected projects">
               {projects.map((project, index) => <button key={project.title} className={selectedProject === index ? "project-tab is-selected" : "project-tab"} onClick={() => setSelectedProject(index)} role="tab" aria-selected={selectedProject === index}><span className="tab-number">0{index + 1}</span><span className="tab-copy"><b>{project.title}</b><small>{project.kicker}</small></span><ChevronRight size={17} /></button>)}
