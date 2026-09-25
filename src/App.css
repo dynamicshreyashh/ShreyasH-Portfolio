@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
-:root { --bg: #050711; --surface: #0b1020; --surface-2: #11182b; --line: rgba(215, 229, 255, .12); --muted: #8290a6; --text: #edf5ff; --mint: #7ce7ff; --blue: #9a7bff; --mono: 'DM Mono', monospace; --display: 'Space Grotesk', sans-serif; --galaxy-deep: #030511; --galaxy-navy: #08142e; --galaxy-purple: #7138ff; --galaxy-blue: #24c7ff; --galaxy-pink: #ff64b7; }
+:root { --bg: #080a0c; --surface: #0e1215; --surface-2: #13191d; --line: rgba(220, 232, 237, .12); --muted: #849098; --text: #e8eef0; --mint: #a7f36b; --blue: #7dd3fc; --mono: 'DM Mono', monospace; --display: 'Space Grotesk', sans-serif; }
 * { scrollbar-width: thin; scrollbar-color: #344047 #080a0c; }
 body { color: var(--text); }
 .portfolio-shell { min-height: 100vh; overflow: hidden; position: relative; background: radial-gradient(circle at 76% 18%, rgba(71, 105, 121, .09), transparent 28%), var(--bg); }
@@ -589,3 +589,4 @@ body { color: var(--text); }
 @media (prefers-reduced-motion: reduce) {
   .galaxy-stars-a,.galaxy-stars-b,.galaxy-shooting-star { animation: none !important; }
 }
+
