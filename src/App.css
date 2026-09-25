@@ -105,3 +105,56 @@ body { color: var(--text); }
 @media (max-width: 1000px) { .desktop-nav { margin-left: 30px; gap: 17px; }.hero-content { gap: 42px; }.capability-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 760px) { .page-width { width: min(100% - 36px, 640px); }.topbar { padding: 0 18px; height: 68px; }.desktop-nav, .topbar-actions .mini-icon { display: none; }.mobile-menu-trigger { display: block; }.available-chip { font-size: 9px; }.hero-section { min-height: auto; padding: 140px 0 80px; }.hero-content { grid-template-columns: 1fr; gap: 64px; }.hero-copy h1 { font-size: clamp(52px, 16vw, 82px); }.hero-lede { font-size: 15px; }.hero-meta { margin-top: 35px; }.hero-visual { min-height: 530px; }.section { padding: 90px 0; }.section-heading { margin-bottom: 46px; }.section-heading h2 { font-size: 43px; }.heading-split, .systems-intro { display: block; }.heading-note { margin: 24px 0 0; }.about-grid { grid-template-columns: 1fr; gap: 45px; }.about-statement p, .systems-intro p { font-size: 16px; }.projects-layout { grid-template-columns: 1fr; gap: 30px; }.project-index { display: grid; grid-template-columns: 1fr 1fr; }.project-tab { padding: 13px 6px; }.project-tab svg { display: none; }.project-tab:nth-child(3), .project-tab:nth-child(4) { border-top: 0; }.all-work-link { grid-column: span 2; }.feature-visual { height: 225px; }.feature-body h3 { font-size: 26px; }.feature-footer { display: block; }.metric-list { align-items: flex-start; margin-top: 16px; }.capability-grid { grid-template-columns: 1fr 1fr; }.capability-card { min-height: 205px; }.capability-card h3 { margin-top: 32px; font-size: 18px; }.principle-strip { align-items: flex-start; flex-wrap: wrap; }.principle-strip strong { width: 100%; margin-left: 32px; }.experience-item { grid-template-columns: 1fr; gap: 13px; }.experience-marker { display: none; }.experience-date { padding: 0; }.experience-role { display: block; }.experience-role span { display: block; margin-top: 8px; }.experience-copy ul { display: block; }.experience-copy li { margin-top: 9px; }.contact-card { min-height: auto; padding: 38px 28px; display: block; }.contact-copy h2 { font-size: 52px; }.contact-actions { align-items: flex-start; margin-top: 38px; }.footer { padding: 25px 0; display: grid; gap: 12px; }.intro-shell { width: calc(100% - 28px); padding: 17px; }.intro-layout { grid-template-columns: 1fr; gap: 6px; min-height: 0; padding: 36px 0 30px; }.intro-core { width: min(265px, 86vw); grid-row: 1; }.intro-copy { grid-row: 2; }.intro-copy h1 { margin: 17px 0; font-size: 53px; }.intro-message { font-size: 13px; }.intro-terminal { margin-top: 22px; }.intro-bottom { display: block; }.intro-actions { margin-top: 18px; justify-content: space-between; }.intro-footnote { line-height: 1.5; }.music-dock, .music-reopen { right: 16px; bottom: 16px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+
+
+/* Section-to-section curtain transition */
+.nav-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 75;
+  pointer-events: none;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.transition-panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 52%;
+  background: rgba(9, 13, 15, .985);
+  border-bottom: 1px solid rgba(167, 243, 107, .22);
+  box-shadow: 0 0 70px rgba(0, 0, 0, .35);
+}
+.transition-panel-left { left: 0; transform-origin: left; }
+.transition-panel-right { right: 0; transform-origin: right; }
+.transition-readout {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: var(--text);
+  font: 12px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  text-shadow: 0 0 18px rgba(0,0,0,.5);
+}
+.transition-readout small {
+  color: var(--mint);
+  font-size: 9px;
+}
+.transition-readout b { font-weight: 400; }
+.transition-readout i {
+  display: block;
+  width: 44px;
+  height: 1px;
+  background: var(--mint);
+  box-shadow: 0 0 12px var(--mint);
+  transform-origin: left;
+  animation: transition-pulse .65s ease-in-out infinite alternate;
+}
+@keyframes transition-pulse {
+  from { opacity: .35; transform: scaleX(.6); }
+  to { opacity: 1; transform: scaleX(1); }
+}
