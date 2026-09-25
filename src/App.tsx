@@ -18,12 +18,9 @@ import {
   Mail,
   MapPin,
   Menu,
-  Play,
-  Power,
   ServerCog,
   Terminal,
   Volume2,
-  VolumeX,
   X,
 } from "lucide-react";
 import "./App.css";
@@ -141,6 +138,145 @@ const systemNodes = Array.from({ length: 56 }, (_, index) => {
     size: 1.2 + (index % 4) * 0.45,
   };
 });
+
+const universeStars = Array.from({ length: 92 }, (_, index) => ({
+  x: (index * 47 + 19) % 100,
+  y: (index * 73 + 11) % 100,
+  size: 0.45 + (index % 4) * 0.35,
+  phase: index * 0.37,
+}));
+
+const universePlanets = [
+  { orbit: 0.24, angle: 0.3, size: 4, color: "#a7f36b", speed: 0.16 },
+  { orbit: 0.36, angle: 2.4, size: 7, color: "#7dd3fc", speed: -0.12 },
+  { orbit: 0.5, angle: 4.8, size: 5, color: "#f0b429", speed: 0.08 },
+  { orbit: 0.66, angle: 1.5, size: 10, color: "#c4b5fd", speed: -0.052 },
+  { orbit: 0.82, angle: 3.7, size: 6, color: "#fb8f72", speed: 0.035 },
+];
+
+function LandingUniverse({ pointer }: { pointer: { x: number; y: number } }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const pointerRef = useRef(pointer);
+  pointerRef.current = pointer;
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    let animationFrame = 0;
+    let width = 0;
+    let height = 0;
+    let time = 0;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const resize = () => {
+      const bounds = canvas.getBoundingClientRect();
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      width = bounds.width;
+      height = bounds.height;
+      canvas.width = Math.max(1, Math.floor(width * pixelRatio));
+      canvas.height = Math.max(1, Math.floor(height * pixelRatio));
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    };
+
+    const draw = () => {
+      const currentPointer = pointerRef.current;
+      const pointerX = Math.max(-1, Math.min(1, (currentPointer.x - window.innerWidth / 2) / window.innerWidth));
+      const pointerY = Math.max(-1, Math.min(1, (currentPointer.y - window.innerHeight / 2) / window.innerHeight));
+      const centerX = width * 0.52 + pointerX * 14;
+      const centerY = height * 0.5 + pointerY * 10;
+      const orbitalRadius = Math.min(width, height) * 0.48;
+
+      context.clearRect(0, 0, width, height);
+      universeStars.forEach((star) => {
+        const shimmer = 0.45 + Math.sin(time * 1.4 + star.phase) * 0.22;
+        context.beginPath();
+        context.arc((star.x / 100) * width, (star.y / 100) * height, star.size, 0, Math.PI * 2);
+        context.fillStyle = `rgba(232, 238, 240, ${Math.max(0.1, shimmer)})`;
+        context.fill();
+      });
+
+      const sunGlow = context.createRadialGradient(centerX, centerY, 0, centerX, centerY, orbitalRadius * 0.32);
+      sunGlow.addColorStop(0, "rgba(232, 255, 206, .28)");
+      sunGlow.addColorStop(0.22, "rgba(167, 243, 107, .12)");
+      sunGlow.addColorStop(1, "rgba(8, 10, 12, 0)");
+      context.fillStyle = sunGlow;
+      context.fillRect(0, 0, width, height);
+
+      for (let index = 0; index < 5; index += 1) {
+        const orbit = orbitalRadius * (0.28 + index * 0.16);
+        context.beginPath();
+        context.ellipse(centerX, centerY, orbit, orbit * 0.44, -0.12, 0, Math.PI * 2);
+        context.strokeStyle = index % 2 === 0 ? "rgba(167, 243, 107, .18)" : "rgba(125, 211, 252, .13)";
+        context.lineWidth = index === 2 ? 1.2 : 0.7;
+        context.setLineDash(index === 2 ? [2, 7] : []);
+        context.stroke();
+      }
+      context.setLineDash([]);
+
+      const sun = context.createRadialGradient(centerX - 7, centerY - 8, 1, centerX, centerY, orbitalRadius * 0.13);
+      sun.addColorStop(0, "rgba(255, 255, 245, .98)");
+      sun.addColorStop(0.38, "rgba(206, 255, 162, .9)");
+      sun.addColorStop(1, "rgba(167, 243, 107, .06)");
+      context.beginPath();
+      context.arc(centerX, centerY, orbitalRadius * 0.105, 0, Math.PI * 2);
+      context.fillStyle = sun;
+      context.shadowColor = "rgba(167, 243, 107, .62)";
+      context.shadowBlur = 28;
+      context.fill();
+      context.shadowBlur = 0;
+
+      universePlanets.forEach((planet, index) => {
+        const angle = planet.angle + time * planet.speed;
+        const orbit = orbitalRadius * planet.orbit;
+        const x = centerX + Math.cos(angle) * orbit;
+        const y = centerY + Math.sin(angle) * orbit * 0.44;
+        const depth = 0.7 + (Math.sin(angle) + 1) * 0.18;
+        const planetSize = planet.size * depth;
+        const gradient = context.createRadialGradient(x - planetSize * 0.35, y - planetSize * 0.4, 0, x, y, planetSize * 1.8);
+        gradient.addColorStop(0, "rgba(255,255,255,.92)");
+        gradient.addColorStop(0.18, planet.color);
+        gradient.addColorStop(1, "rgba(8,10,12,0)");
+        context.beginPath();
+        context.arc(x, y, planetSize * 1.8, 0, Math.PI * 2);
+        context.fillStyle = gradient;
+        context.fill();
+        context.beginPath();
+        context.arc(x, y, planetSize, 0, Math.PI * 2);
+        context.fillStyle = planet.color;
+        context.globalAlpha = depth;
+        context.shadowColor = planet.color;
+        context.shadowBlur = index === 3 ? 16 : 9;
+        context.fill();
+        context.globalAlpha = 1;
+        context.shadowBlur = 0;
+        if (index === 3) {
+          context.beginPath();
+          context.ellipse(x, y, planetSize * 1.9, planetSize * 0.52, -0.18, 0, Math.PI * 2);
+          context.strokeStyle = "rgba(196, 181, 253, .65)";
+          context.lineWidth = 1;
+          context.stroke();
+        }
+      });
+
+      if (!reducedMotion) time += 0.006;
+      animationFrame = window.requestAnimationFrame(draw);
+    };
+
+    resize();
+    const resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(canvas);
+    draw();
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+      resizeObserver.disconnect();
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="landing-universe-canvas" aria-hidden="true" />;
+}
 
 function SystemsCore({ pointer }: { pointer: { x: number; y: number } }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -265,8 +401,6 @@ function App() {
   const [scrolled, setScrolled] = useState(false);
   const [progress, setProgress] = useState(0);
   const [pointer, setPointer] = useState({ x: 0, y: 0 });
-  const [introOpen, setIntroOpen] = useState(true);
-  const [bootProgress, setBootProgress] = useState(0);
   const [soundOn, setSoundOn] = useState(false);
   const [navTransition, setNavTransition] = useState<string | null>(null);
   const navTimerRef = useRef<number | null>(null);
@@ -283,20 +417,6 @@ function App() {
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  useEffect(() => {
-    if (!introOpen) return;
-    const bootTimer = window.setInterval(() => {
-      setBootProgress((value) => Math.min(value + 4, 100));
-    }, 95);
-    const autoEnterTimer = window.setTimeout(() => {
-      setIntroOpen(false);
-    }, 5200);
-    return () => {
-      window.clearInterval(bootTimer);
-      window.clearTimeout(autoEnterTimer);
-    };
-  }, [introOpen]);
 
   useEffect(() => {
     const sections = ["about", "projects", "systems", "experience", "contact"]
@@ -349,11 +469,6 @@ function App() {
     setPointer({ x: event.clientX, y: event.clientY });
   };
 
-  const enterExperience = (withSound = false) => {
-    setSoundOn(withSound);
-    setIntroOpen(false);
-  };
-
   const activeProject = projects[selectedProject];
 
   return (
@@ -365,55 +480,6 @@ function App() {
       <div className="cursor-glow" aria-hidden="true" />
       <div className="noise-layer" aria-hidden="true" />
       <div className="progress-line" style={{ width: progress + "%" }} aria-hidden="true" />
-
-      <AnimatePresence>
-        {introOpen && (
-          <motion.div
-            className="intro-screen"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 1.03, filter: "blur(10px)" }}
-            transition={{ duration: 0.7, ease: "easeInOut" }}
-          >
-            <div className="intro-stars" aria-hidden="true" />
-            <div className="intro-scanlines" aria-hidden="true" />
-            <div className="intro-shell">
-              <div className="intro-topline">
-                <span><span className="live-dot" /> SHREYASH / OS</span>
-                <span>portfolio build 01.25</span>
-              </div>
-              <div className="intro-layout">
-                <div className="intro-copy">
-                  <p className="intro-overline">A SMALL DIGITAL UNIVERSE BY SHREYASH BHOSALE</p>
-                  <h1>Welcome to<br /><em>the build.</em></h1>
-                  <p className="intro-message">A Java engineer’s portfolio, booting up. Expect systems, experiments, and a little signal in the noise.</p>
-                  <div className="intro-terminal">
-                    <span><b>$</b> initialize --experience</span>
-                    <span className="terminal-dim">loading interface / api / systems lab</span>
-                    <span className="terminal-ok"><Check size={12} /> environment ready</span>
-                  </div>
-                </div>
-                <div className="intro-core" aria-hidden="true">
-                  <div className="core-rings"><span /><span /><span /></div>
-                  <div className="core-mark"><Power size={22} /><b>SB</b></div>
-                  <div className="core-label label-top">JAVA / AI / SYSTEMS</div>
-                  <div className="core-label label-bottom">PRESS ENTER TO CONNECT</div>
-                </div>
-              </div>
-              <div className="intro-bottom">
-                <div className="boot-meter">
-                  <div className="boot-meter-label"><span>boot sequence</span><b>{String(bootProgress).padStart(3, "0")}%</b></div>
-                  <div className="boot-track"><span style={{ width: bootProgress + "%" }} /></div>
-                </div>
-                <div className="intro-actions">
-                  <button className="button button-primary intro-enter" onClick={() => enterExperience(true)}><Play size={14} fill="currentColor" /> Enter with theme</button>
-                  <button className="intro-skip" onClick={() => enterExperience(false)}>skip intro <ArrowUpRight size={13} /></button>
-                </div>
-              </div>
-              <p className="intro-footnote">soundtrack available · click enter to start audio · auto-entry in a few seconds</p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <AnimatePresence>
         {navTransition && (
@@ -460,29 +526,28 @@ function App() {
           <div className="hero-grid" aria-hidden="true" />
           <div className="hero-content page-width">
             <motion.div className="hero-copy" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-              <div className="eyebrow"><span className="eyebrow-line" /> <span>JAVA FULL-STACK DEVELOPER / PUNE, INDIA</span></div>
-              <h1>Software with<br /><em>structure.</em><br /><span>Built for motion.</span></h1>
-              <p className="hero-lede">I build backend systems, practical AI features, and full-stack products that move cleanly from <strong>idea → architecture → deployment.</strong></p>
+              <div className="eyebrow"><span className="eyebrow-line" /> <span>SHREYASH BHOSALE / JAVA + AI ENGINEER</span></div>
+              <h1>Building<br /><em>systems</em><br /><span>with intent.</span></h1>
+              <p className="hero-lede">Java full-stack engineering, practical AI, and dependable systems—shaped from <strong>idea → architecture → deployment.</strong></p>
               <div className="hero-actions">
                 <button className="button button-primary" onClick={() => scrollTo("projects")}>Explore selected work <ArrowDownRight size={17} /></button>
                 <a className="button button-quiet" href="/images/Shreyash_Bhosale_BTech_CSE.pdf" target="_blank" rel="noreferrer">View resume <Download size={16} /></a>
               </div>
-              <div className="hero-meta"><span><MapPin size={14} /> Pune, Maharashtra</span><span><Activity size={14} /> building the next layer</span></div>
+              <div className="hero-meta"><span><MapPin size={14} /> Pune, Maharashtra</span><span><Activity size={14} /> open to meaningful builds</span></div>
             </motion.div>
 
-            <motion.div className="hero-visual" initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1, delay: 0.15 }}>
-              <div className="visual-header"><span><span className="live-dot" /> system map / live</span><span>v.2025—now</span></div>
-              <div className="portrait-stage">
-                <SystemsCore pointer={pointer} />
-                <div className="orbit orbit-one" /><div className="orbit orbit-two" />
-                <div className="portrait-card"><img src="/images/ShreyasH.jpg" alt="Shreyash Bhosale" /><span className="portrait-label">SHREYASH<br /><b>BHOSALE</b></span></div>
-                <span className="orbit-tag tag-one">JAVA / API</span><span className="orbit-tag tag-two">AI / RAG</span><span className="orbit-tag tag-three">SYSTEMS</span>
+            <motion.div className="hero-visual hero-universe-panel" initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1, delay: 0.15 }}>
+              <div className="visual-header"><span><span className="live-dot" /> observatory / live</span><span>signal 01 · now</span></div>
+              <div className="hero-universe">
+                <LandingUniverse pointer={pointer} />
+                <div className="universe-core"><span className="universe-core-aura" /><b>SB</b><small>JAVA / AI</small></div>
+                <span className="universe-label universe-label-one">01 / API</span>
+                <span className="universe-label universe-label-two">02 / AI</span>
+                <span className="universe-label universe-label-three">03 / SYSTEMS</span>
+                <div className="universe-avatar"><img src="/images/ShreyasH.jpg" alt="Shreyash Bhosale" /><span>operator / shreyash</span></div>
+                <div className="universe-crosshair" aria-hidden="true" />
               </div>
-              <div className="system-map">
-                <div className="map-label">HOW I THINK ABOUT A BUILD</div>
-                <div className="map-flow"><div className="map-node"><Code2 size={15} /><span>interface</span></div><div className="flow-line" /><div className="map-node map-node-active"><ServerCog size={15} /><span>service</span></div><div className="flow-line" /><div className="map-node"><Database size={15} /><span>data</span></div></div>
-                <div className="map-foot"><span>async when it matters</span><span>reliable by default</span></div>
-              </div>
+              <div className="universe-footer"><span><i /> interactive field</span><span>move your cursor through the system</span></div>
             </motion.div>
           </div>
           <div className="scroll-cue"><span>scroll to inspect</span><ChevronRight size={14} /></div>
@@ -567,9 +632,9 @@ function App() {
             <button className="music-toggle" onClick={() => setSoundOn(false)} aria-label="Turn theme music off"><Volume2 size={16} /></button>
           </motion.div>
         )}
-        {!soundOn && !introOpen && (
+        {!soundOn && (
           <motion.button className="music-reopen" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} onClick={() => setSoundOn(true)} aria-label="Turn theme music on">
-            <VolumeX size={16} /><span>theme</span>
+            <Volume2 size={16} /><span>play theme</span>
           </motion.button>
         )}
       </AnimatePresence>
