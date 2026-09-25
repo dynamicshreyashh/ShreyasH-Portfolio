@@ -312,6 +312,18 @@ function App() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const revealSections = Array.from(document.querySelectorAll(".reveal-section"));
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => entry.target.classList.toggle("is-visible", entry.isIntersecting));
+      },
+      { rootMargin: "0px 0px -12% 0px", threshold: 0.12 },
+    );
+    revealSections.forEach((section) => revealObserver.observe(section));
+    return () => revealObserver.disconnect();
+  }, []);
+
   useEffect(() => () => {
     if (navTimerRef.current) window.clearTimeout(navTimerRef.current);
   }, []);
@@ -324,11 +336,10 @@ function App() {
   const navigateTo = (id: string, label: string) => {
     if (navTimerRef.current) window.clearTimeout(navTimerRef.current);
     setNavTransition(label);
-
     navTimerRef.current = window.setTimeout(() => {
       scrollTo(id);
-      navTimerRef.current = window.setTimeout(() => setNavTransition(null), 250);
-    }, 250);
+      setNavTransition(null);
+    }, 240);
   };
 
   const handlePointerMove = (event: ReactMouseEvent<HTMLDivElement>) => {
@@ -403,33 +414,10 @@ function App() {
 
       <AnimatePresence>
         {navTransition && (
-          <motion.div
-            className="nav-transition"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.12 }}
-            aria-hidden="true"
-          >
-            <motion.span
-              className="transition-panel transition-panel-left"
-              initial={{ x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              transition={{ duration: 0.24, ease: [0.76, 0, 0.24, 1] }}
-            />
-            <motion.span
-              className="transition-panel transition-panel-right"
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ duration: 0.24, ease: [0.76, 0, 0.24, 1] }}
-            />
-            <span className="transition-readout">
-              <small>routing / 0{navLinks.findIndex((link) => link.label === navTransition) + 1}</small>
-              <b>{navTransition}</b>
-              <i />
-            </span>
+          <motion.div className="nav-transition" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.18 }}>
+            <motion.span className="transition-panel transition-panel-left" initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }} transition={{ duration: 0.24, ease: [0.76, 0, 0.24, 1] }} />
+            <motion.span className="transition-panel transition-panel-right" initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ duration: 0.24, ease: [0.76, 0, 0.24, 1] }} />
+            <span className="transition-readout"><small>routing / 0{navLinks.findIndex((link) => link.label === navTransition) + 1}</small><b>{navTransition}</b><i /></span>
           </motion.div>
         )}
       </AnimatePresence>
@@ -495,7 +483,7 @@ function App() {
           <div className="scroll-cue"><span>scroll to inspect</span><ChevronRight size={14} /></div>
         </section>
 
-        <section className="section section-about page-width" id="about">
+         <section className="section section-about page-width reveal-section" id="about">
           <div className="section-heading"><span className="section-index">01</span><div><p className="section-kicker">PROFILE / THE THROUGH-LINE</p><h2>Curious about the<br /><span>parts beneath the screen.</span></h2></div></div>
           <div className="about-grid">
             <div className="about-statement"><p>I enjoy the whole path of a product: shaping the domain, making the API honest, giving the interface a pulse, and shipping something another person can actually use.</p><p>These days my attention is moving deeper into <strong>distributed systems</strong> and <strong>AI engineering</strong>—queues, failures, retrieval, orchestration, and the trade-offs hiding behind a “simple” feature.</p><a className="text-link" href="mailto:shreyashbhosale078@gmail.com">Let’s build something considered <ArrowUpRight size={15} /></a></div>
@@ -503,7 +491,7 @@ function App() {
           </div>
         </section>
 
-        <section className="section section-projects page-width" id="projects">
+         <section className="section section-projects page-width reveal-section" id="projects">
           <div className="section-heading heading-split"><div><span className="section-index">02</span><div><p className="section-kicker">SELECTED WORK / SHIPPED</p><h2>Small products.<br /><span>Serious systems thinking.</span></h2></div></div><p className="heading-note">A few places where I went beyond making the feature work—and started asking how it behaves under pressure.</p></div>
           <div className="project-space">
             <div className="project-space-topline"><span><span className="live-dot" /> project architecture / interactive map</span><span>{String(projects.length).padStart(2, "0")} nodes · choose a system</span></div>
@@ -541,19 +529,19 @@ function App() {
           </div>
         </section>
 
-        <section className="section section-systems page-width" id="systems">
+         <section className="section section-systems page-width reveal-section" id="systems">
           <div className="section-heading"><span className="section-index">03</span><div><p className="section-kicker">SYSTEMS LAB / CURRENT DIRECTION</p><h2>Learning the shape<br /><span>of what comes next.</span></h2></div></div>
           <div className="systems-intro"><p>I’m moving from building individual features to understanding the systems that make software dependable at scale. Not collecting buzzwords—studying the trade-offs.</p><div className="systems-status"><span className="pulse-dot" /> currently exploring</div></div>
           <div className="capability-grid">{stackGroups.map((group, index) => { const Icon = group.icon; return <motion.div className="capability-card" key={group.label} whileHover={{ y: -5 }} transition={{ duration: 0.2 }}><div className="capability-top"><span className="capability-icon"><Icon size={18} /></span><span>0{index + 1}</span></div><h3>{group.label}</h3><div className="capability-items">{group.items.map((item) => <span key={item}>{item}</span>)}</div></motion.div>; })}</div>
           <div className="principle-strip"><Terminal size={18} /><span>engineering filter</span><strong>Can it be understood? Can it recover? Can it be extended without fear?</strong><ArrowUpRight size={17} /></div>
         </section>
 
-        <section className="section section-experience page-width" id="experience">
+         <section className="section section-experience page-width reveal-section" id="experience">
           <div className="section-heading heading-split"><div><span className="section-index">04</span><div><p className="section-kicker">EXPERIENCE / FOUNDATION</p><h2>The work behind<br /><span>the work.</span></h2></div></div><p className="heading-note">A practical foundation in product work, APIs, and the discipline of finishing what I start.</p></div>
           <div className="experience-list">{experience.map((item, index) => <motion.article className="experience-item" key={item.role} initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.1 }}><div className="experience-date">{item.date}</div><div className="experience-marker"><span /></div><div className="experience-copy"><div className="experience-role"><h3>{item.role}</h3><span>{item.company}</span></div><p>{item.description}</p><ul>{item.bullets.map((bullet) => <li key={bullet}><span />{bullet}</li>)}</ul></div></motion.article>)}</div>
         </section>
 
-        <section className="contact-section page-width" id="contact">
+         <section className="contact-section page-width reveal-section" id="contact">
           <div className="contact-card"><div className="contact-orb" /><div className="contact-copy"><span className="section-kicker">05 / START A CONVERSATION</span><h2>Have a system<br /><em>worth building?</em></h2><p>I’m open to Java full-stack, backend engineering, and thoughtful AI product opportunities.</p></div><div className="contact-actions"><a className="button button-primary" href="mailto:shreyashbhosale078@gmail.com">Send an email <Mail size={16} /></a><div className="contact-links"><a href="https://www.linkedin.com/in/shreyash-5a7726245/" target="_blank" rel="noreferrer"><Linkedin size={16} /> LinkedIn</a><a href="https://github.com/dynamicshreyashh" target="_blank" rel="noreferrer"><Github size={16} /> GitHub</a></div></div></div>
         </section>
       </main>
