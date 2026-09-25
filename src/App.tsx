@@ -8,6 +8,7 @@ import {
   BrainCircuit,
   Check,
   ChevronRight,
+  Code2,
   Container,
   Database,
   Download,
@@ -413,149 +414,36 @@ function App() {
       </AnimatePresence>
 
       <main>
-        <section className="hero-section galaxy-hero" id="home">
-          <div className="galaxy-bg" aria-hidden="true">
-            <div className="galaxy-stars galaxy-stars-a" />
-            <div className="galaxy-stars galaxy-stars-b" />
-            <div className="galaxy-nebula galaxy-nebula-purple" />
-            <div className="galaxy-nebula galaxy-nebula-blue" />
-            <div className="galaxy-nebula galaxy-nebula-pink" />
-            <div className="galaxy-shooting-star shooting-star-a" />
-            <div className="galaxy-shooting-star shooting-star-b" />
-          </div>
-
-          <div className="hero-content page-width galaxy-hero-content">
-            <motion.div
-              className="hero-copy galaxy-copy"
-              initial={{ opacity: 0, y: 34 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.85, ease: "easeOut" }}
-            >
-              <div className="galaxy-eyebrow">
-                <span className="galaxy-eyebrow-line" />
-                <span>JAVA FULL-STACK DEVELOPER · PUNE, INDIA</span>
-              </div>
-
-              <h1>
-                <span>SHREYASH</span>
-                <em>BHOSALE</em>
-              </h1>
-
-              <div className="galaxy-role">
-                <span>FULL-STACK DEVELOPER</span>
-                <i />
-                <span>JAVA · SPRING BOOT · SQL · GEN AI</span>
-              </div>
-
-              <p className="hero-lede galaxy-lede">
-                I build backend systems, practical AI features, and full-stack products with a focus on
-                <strong> clean architecture, useful interfaces, and reliable delivery.</strong>
-              </p>
-
+        <section className="hero-section" id="home">
+          <div className="hero-grid" aria-hidden="true" />
+          <div className="hero-content page-width">
+            <motion.div className="hero-copy" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+              <div className="eyebrow"><span className="eyebrow-line" /> <span>JAVA FULL-STACK DEVELOPER / PUNE, INDIA</span></div>
+              <h1>Software with<br /><em>structure.</em><br /><span>Built for motion.</span></h1>
+              <p className="hero-lede">I build backend systems, practical AI features, and full-stack products that move cleanly from <strong>idea → architecture → deployment.</strong></p>
               <div className="hero-actions">
-                <button className="button button-primary galaxy-primary" onClick={() => scrollTo("projects")}>
-                  Explore my work <ArrowDownRight size={17} />
-                </button>
-                <a className="button button-quiet galaxy-secondary" href="/images/Shreyash_Bhosale_BTech_CSE.pdf" target="_blank" rel="noreferrer">
-                  View resume <Download size={16} />
-                </a>
+                <button className="button button-primary" onClick={() => scrollTo("projects")}>Explore selected work <ArrowDownRight size={17} /></button>
+                <a className="button button-quiet" href="/images/Shreyash_Bhosale_BTech_CSE.pdf" target="_blank" rel="noreferrer">View resume <Download size={16} /></a>
               </div>
-
-              <div className="hero-meta galaxy-meta">
-                <span><MapPin size={14} /> Pune, Maharashtra</span>
-                <span><Activity size={14} /> open to work</span>
-              </div>
+              <div className="hero-meta"><span><MapPin size={14} /> Pune, Maharashtra</span><span><Activity size={14} /> building the next layer</span></div>
             </motion.div>
 
-            <motion.div
-              className="hero-visual galaxy-visual"
-              initial={{ opacity: 0, scale: 0.94, x: 18 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              transition={{ duration: 1.05, delay: 0.12, ease: "easeOut" }}
-            >
-              <div className="galaxy-visual-header">
-                <span><span className="live-dot" /> PERSONAL ORBIT / ONLINE</span>
-                <span>SHREYASH · 2026</span>
+            <motion.div className="hero-visual" initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1, delay: 0.15 }}>
+              <div className="visual-header"><span><span className="live-dot" /> system map / live</span><span>v.2025—now</span></div>
+              <div className="portrait-stage">
+                <SystemsCore pointer={pointer} />
+                <div className="orbit orbit-one" /><div className="orbit orbit-two" />
+                <div className="portrait-card"><img src="/images/ShreyasH.jpg" alt="Shreyash Bhosale" /><span className="portrait-label">SHREYASH<br /><b>BHOSALE</b></span></div>
+                <span className="orbit-tag tag-one">JAVA / API</span><span className="orbit-tag tag-two">AI / RAG</span><span className="orbit-tag tag-three">SYSTEMS</span>
               </div>
-
-              <div className="galaxy-stage">
-                <div className="galaxy-dust" aria-hidden="true" />
-                <div className="galaxy-orbit orbit-primary" aria-hidden="true" />
-                <div className="galaxy-orbit orbit-secondary" aria-hidden="true" />
-                <div className="galaxy-orbit orbit-tertiary" aria-hidden="true" />
-
-                <motion.div
-                  className="galaxy-planet"
-                  animate={{ y: [-8, 8, -8], rotate: [0, 2, 0] }}
-                  transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  <span className="planet-glow" />
-                  <span className="planet-body" />
-                  <span className="planet-highlight" />
-                  <span className="planet-ring" />
-                </motion.div>
-
-                <motion.div
-                  className="galaxy-portrait-card"
-                  animate={{ y: [7, -7, 7], rotate: [-4.5, -2.5, -4.5] }}
-                  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  <div className="galaxy-portrait-frame">
-                    <img src="/images/ShreyasH.jpg" alt="Shreyash Bhosale" />
-                  </div>
-                  <div className="galaxy-portrait-copy">
-                    <span>SB / 01</span>
-                    <b>SHREYASH<br />BHOSALE</b>
-                    <small>JAVA FULL-STACK DEVELOPER</small>
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  className="galaxy-float-tag float-java"
-                  style={{ x: Math.max(-12, Math.min(12, (pointer.x - window.innerWidth / 2) / 55)) }}
-                >
-                  <span>JAVA</span><small>backend</small>
-                </motion.div>
-
-                <motion.div
-                  className="galaxy-float-tag float-ai"
-                  style={{ x: Math.max(-10, Math.min(10, (pointer.x - window.innerWidth / 2) / -70)) }}
-                >
-                  <span>GEN AI</span><small>applied</small>
-                </motion.div>
-
-                <motion.div className="galaxy-float-tag float-sql">
-                  <span>SQL</span><small>data layer</small>
-                </motion.div>
-
-                <div className="galaxy-particle-shell" aria-hidden="true">
-                  <SystemsCore pointer={pointer} />
-                </div>
-              </div>
-
-              <div className="galaxy-visual-footer">
-                <div>
-                  <span>BUILD</span>
-                  <b>IDEA</b>
-                </div>
-                <i />
-                <div>
-                  <span>ARCHITECT</span>
-                  <b>SYSTEM</b>
-                </div>
-                <i />
-                <div>
-                  <span>SHIP</span>
-                  <b>PRODUCT</b>
-                </div>
+              <div className="system-map">
+                <div className="map-label">HOW I THINK ABOUT A BUILD</div>
+                <div className="map-flow"><div className="map-node"><Code2 size={15} /><span>interface</span></div><div className="flow-line" /><div className="map-node map-node-active"><ServerCog size={15} /><span>service</span></div><div className="flow-line" /><div className="map-node"><Database size={15} /><span>data</span></div></div>
+                <div className="map-foot"><span>async when it matters</span><span>reliable by default</span></div>
               </div>
             </motion.div>
           </div>
-
-          <div className="scroll-cue galaxy-scroll-cue">
-            <span>explore the orbit</span>
-            <ChevronRight size={14} />
-          </div>
+          <div className="scroll-cue"><span>scroll to inspect</span><ChevronRight size={14} /></div>
         </section>
 
         <section className="section section-about page-width" id="about">
