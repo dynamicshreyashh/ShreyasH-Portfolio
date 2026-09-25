@@ -270,6 +270,7 @@ function App() {
   const [soundOn, setSoundOn] = useState(false);
   const [navTransition, setNavTransition] = useState<string | null>(null);
   const navTimerRef = useRef<number | null>(null);
+  const navClearTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     document.title = "Shreyash Bhosale — Java Full-Stack Developer";
@@ -326,6 +327,7 @@ function App() {
 
   useEffect(() => () => {
     if (navTimerRef.current) window.clearTimeout(navTimerRef.current);
+    if (navClearTimerRef.current) window.clearTimeout(navClearTimerRef.current);
   }, []);
 
   const scrollTo = (id: string) => {
@@ -335,11 +337,12 @@ function App() {
 
   const navigateTo = (id: string, label: string) => {
     if (navTimerRef.current) window.clearTimeout(navTimerRef.current);
+    if (navClearTimerRef.current) window.clearTimeout(navClearTimerRef.current);
     setNavTransition(label);
     navTimerRef.current = window.setTimeout(() => {
       scrollTo(id);
-      setNavTransition(null);
-    }, 240);
+      navClearTimerRef.current = window.setTimeout(() => setNavTransition(null), 660);
+    }, 110);
   };
 
   const handlePointerMove = (event: ReactMouseEvent<HTMLDivElement>) => {
@@ -414,10 +417,12 @@ function App() {
 
       <AnimatePresence>
         {navTransition && (
-          <motion.div className="nav-transition" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.18 }}>
-            <motion.span className="transition-panel transition-panel-left" initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }} transition={{ duration: 0.24, ease: [0.76, 0, 0.24, 1] }} />
-            <motion.span className="transition-panel transition-panel-right" initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ duration: 0.24, ease: [0.76, 0, 0.24, 1] }} />
-            <span className="transition-readout"><small>routing / 0{navLinks.findIndex((link) => link.label === navTransition) + 1}</small><b>{navTransition}</b><i /></span>
+          <motion.div className="nav-transition" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
+            <span className="transition-orbit transition-orbit-one" aria-hidden="true" />
+            <span className="transition-orbit transition-orbit-two" aria-hidden="true" />
+            <span className="transition-dash transition-dash-one" aria-hidden="true" />
+            <span className="transition-dash transition-dash-two" aria-hidden="true" />
+            <span className="transition-readout"><small>jump / 0{navLinks.findIndex((link) => link.label === navTransition) + 1}</small><b>{navTransition}</b><i /></span>
           </motion.div>
         )}
       </AnimatePresence>
