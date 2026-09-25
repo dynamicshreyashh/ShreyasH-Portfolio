@@ -268,6 +268,8 @@ function App() {
   const [introOpen, setIntroOpen] = useState(true);
   const [bootProgress, setBootProgress] = useState(0);
   const [soundOn, setSoundOn] = useState(false);
+  const [navTransition, setNavTransition] = useState<string | null>(null);
+  const navTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     document.title = "Shreyash Bhosale — Java Full-Stack Developer";
@@ -310,9 +312,23 @@ function App() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => () => {
+    if (navTimerRef.current) window.clearTimeout(navTimerRef.current);
+  }, []);
+
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     setMobileOpen(false);
+  };
+
+  const navigateTo = (id: string, label: string) => {
+    if (navTimerRef.current) window.clearTimeout(navTimerRef.current);
+    setNavTransition(label);
+
+    navTimerRef.current = window.setTimeout(() => {
+      scrollTo(id);
+      navTimerRef.current = window.setTimeout(() => setNavTransition(null), 250);
+    }, 250);
   };
 
   const handlePointerMove = (event: ReactMouseEvent<HTMLDivElement>) => {
@@ -385,13 +401,46 @@ function App() {
         )}
       </AnimatePresence>
 
+      <AnimatePresence>
+        {navTransition && (
+          <motion.div
+            className="nav-transition"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.12 }}
+            aria-hidden="true"
+          >
+            <motion.span
+              className="transition-panel transition-panel-left"
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ duration: 0.24, ease: [0.76, 0, 0.24, 1] }}
+            />
+            <motion.span
+              className="transition-panel transition-panel-right"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 0.24, ease: [0.76, 0, 0.24, 1] }}
+            />
+            <span className="transition-readout">
+              <small>routing / 0{navLinks.findIndex((link) => link.label === navTransition) + 1}</small>
+              <b>{navTransition}</b>
+              <i />
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <header className={"topbar " + (scrolled ? "is-scrolled" : "")}>
         <button className="brand-mark" onClick={() => scrollTo("home")} aria-label="Back to top">
           <span>SB</span><i>®</i>
         </button>
         <nav className="desktop-nav" aria-label="Primary navigation">
           {navLinks.map((link) => (
-            <button key={link.id} className={activeSection === link.id ? "is-active" : ""} onClick={() => scrollTo(link.id)}>
+            <button key={link.id} className={activeSection === link.id ? "is-active" : ""} onClick={() => navigateTo(link.id, link.label)}>
               <span>{link.label}</span>
               <small>0{navLinks.findIndex((item) => item.id === link.id) + 1}</small>
             </button>
@@ -407,7 +456,7 @@ function App() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div className="mobile-nav" initial={{ opacity: 0, y: -14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }}>
-            {navLinks.map((link) => <button key={link.id} onClick={() => scrollTo(link.id)}>{link.label}<ArrowUpRight size={15} /></button>)}
+            {navLinks.map((link) => <button key={link.id} onClick={() => navigateTo(link.id, link.label)}>{link.label}<ArrowUpRight size={15} /></button>)}
             <a href="mailto:shreyashbhosale078@gmail.com">Start a conversation <ArrowUpRight size={15} /></a>
           </motion.div>
         )}
