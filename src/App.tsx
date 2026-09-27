@@ -875,11 +875,11 @@ function App() {
             <iframe
               className="music-iframe"
               title="Portfolio theme music"
-              src="https://www.youtube-nocookie.com/embed/Z5D-35D7eXE?autoplay=1&loop=1&playlist=Z5D-35D7eXE&controls=0&modestbranding=1&rel=0&playsinline=1&mute=0"
+              src="https://www.youtube-nocookie.com/embed/UDVtMYqUAyw?autoplay=1&start=20&loop=1&playlist=UDVtMYqUAyw&controls=0&modestbranding=1&rel=0&playsinline=1&mute=0"
               allow="autoplay; encrypted-media"
             />
             <span className="music-eq"><i /><i /><i /><i /></span>
-            <span className="music-label"><b>theme / live</b><small>background signal</small></span>
+            <span className="music-label"><b>interstellar / live</b><small>background signal</small></span>
             <button className="music-toggle" onClick={() => setSoundOn(false)} aria-label="Turn theme music off"><Volume2 size={16} /></button>
           </motion.div>
         )}
