@@ -450,7 +450,7 @@ function GalaxyLanding({ onEnter }: { onEnter: () => void }) {
         const shimmer = reducedMotion ? 0.55 : 0.42 + Math.sin(time * 1.6 + star.phase) * 0.2;
         context.beginPath();
         context.arc((star.x / 100) * width, (star.y / 100) * height, star.size, 0, Math.PI * 2);
-        context.fillStyle = \`rgba(224, 232, 236, \${Math.max(0.12, shimmer)})\`;
+        context.fillStyle = "rgba(224, 232, 236, " + Math.max(0.12, shimmer) + ")";
         context.fill();
       });
 
@@ -715,7 +715,8 @@ function App() {
   const activeProject = projects[selectedProject];
 
   return (
-    <AnimatePresence>{showGalaxyLanding && <GalaxyLanding onEnter={() => setShowGalaxyLanding(false)} />}</AnimatePresence>
+    <>
+      <AnimatePresence>{showGalaxyLanding && <GalaxyLanding onEnter={() => setShowGalaxyLanding(false)} />}</AnimatePresence>
     <div
       className="portfolio-shell"
       onMouseMove={handlePointerMove}
@@ -861,6 +862,8 @@ function App() {
       </main>
 
       <footer className="footer page-width"><span>© {new Date().getFullYear()} SHREYASH BHOSALE</span><span>JAVA / SYSTEMS / AI</span><a href="#home" onClick={(event) => { event.preventDefault(); scrollTo("home"); }}>back to top <ArrowUpRight size={14} /></a></footer>
+    </div>
+  </>
 
       <AnimatePresence>
         {soundOn && (
