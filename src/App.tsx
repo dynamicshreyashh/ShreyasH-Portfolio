@@ -407,17 +407,18 @@ function GalaxyLanding({ onEnter }: { onEnter: () => void }) {
     const context = canvas.getContext("2d");
     if (!context) return;
 
-    let animationFrame = 0;
+    let frame = 0;
     let width = 0;
     let height = 0;
     let time = 0;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    const stars = Array.from({ length: 240 }, (_, index) => ({
-      x: (index * 73.13 + 19) % 100,
-      y: (index * 41.71 + 11) % 100,
-      size: 0.35 + (index % 5) * 0.27,
-      phase: index * 0.61,
+    const stars = Array.from({ length: 260 }, (_, index) => ({
+      x: (index * 71.31 + 17) % 100,
+      y: (index * 43.17 + 9) % 100,
+      size: 0.3 + (index % 5) * 0.24,
+      phase: index * 0.63,
+      drift: ((index % 3) - 1) * 0.0007,
     }));
 
     const resize = () => {
@@ -430,91 +431,105 @@ function GalaxyLanding({ onEnter }: { onEnter: () => void }) {
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
     };
 
-    const draw = () => {
-      const pointer = pointerRef.current;
-      const px = Math.max(-1, Math.min(1, (pointer.x - width / 2) / Math.max(width, 1)));
-      const py = Math.max(-1, Math.min(1, (pointer.y - height / 2) / Math.max(height, 1)));
-      const cx = width * 0.53 + px * 22;
-      const cy = height * 0.51 + py * 14;
-      const base = Math.min(width, height) * 0.38;
+    const drawGalaxy = () => {
+      const cx = width * 0.55;
+      const cy = height * 0.52;
+      const outer = Math.min(width, height) * 0.52;
 
-      context.clearRect(0, 0, width, height);
-
-      stars.forEach((star) => {
-        const shimmer = reducedMotion ? 0.48 : 0.36 + Math.sin(time * 1.7 + star.phase) * 0.2;
-        context.beginPath();
-        context.arc((star.x / 100) * width, (star.y / 100) * height, star.size, 0, Math.PI * 2);
-        context.fillStyle = "rgba(232,238,240," + Math.max(0.08, shimmer) + ")";
-        context.fill();
-      });
-
-      const haze = context.createRadialGradient(cx, cy, 0, cx, cy, base * 2.7);
-      haze.addColorStop(0, "rgba(167,243,107,.08)");
-      haze.addColorStop(.35, "rgba(125,211,252,.035)");
+      const haze = context.createRadialGradient(cx, cy, 0, cx, cy, outer);
+      haze.addColorStop(0, "rgba(167,243,107,.12)");
+      haze.addColorStop(.16, "rgba(125,211,252,.055)");
+      haze.addColorStop(.48, "rgba(80,110,135,.018)");
       haze.addColorStop(1, "rgba(8,10,12,0)");
       context.fillStyle = haze;
       context.fillRect(0, 0, width, height);
 
-      for (let index = 0; index < 7; index += 1) {
-        const orbit = base * (0.5 + index * 0.14);
+      context.save();
+      context.translate(cx, cy);
+      context.rotate(-0.1);
+      for (let arm = 0; arm < 2; arm += 1) {
         context.beginPath();
-        context.ellipse(cx, cy, orbit, orbit * (0.23 + index * 0.015), -0.10, 0, Math.PI * 2);
-        context.strokeStyle = index === 2 ? "rgba(167,243,107,.19)" : "rgba(126,147,171,.11)";
-        context.lineWidth = index === 2 ? 1.15 : 0.75;
-        context.setLineDash(index === 2 ? [2, 8] : []);
+        for (let step = 0; step <= 170; step += 1) {
+          const t = step / 170;
+          const radius = outer * (0.05 + t * 0.9);
+          const angle = t * Math.PI * 2.35 + arm * Math.PI;
+          const x = Math.cos(angle) * radius * 1.45;
+          const y = Math.sin(angle) * radius * 0.32;
+          if (step === 0) context.moveTo(x, y);
+          else context.lineTo(x, y);
+        }
+        context.strokeStyle = arm === 0 ? "rgba(167,243,107,.12)" : "rgba(125,211,252,.075)";
+        context.lineWidth = 1;
         context.stroke();
       }
-      context.setLineDash([]);
+      context.restore();
 
-      const cross = base * 1.35;
+      for (let arm = 0; arm < 2; arm += 1) {
+        for (let index = 0; index < 68; index += 1) {
+          const t = index / 68;
+          const angle = t * Math.PI * 2.35 + arm * Math.PI;
+          const radius = outer * (0.08 + t * 0.86);
+          const jitter = Math.sin(index * 2.11 + arm) * 5;
+          const x = cx + Math.cos(angle) * radius * 1.45 + jitter;
+          const y = cy + Math.sin(angle) * radius * 0.32 + Math.cos(index * 1.57) * 4;
+          const alpha = 0.08 + (1 - t) * 0.18;
+          context.beginPath();
+          context.arc(x, y, 0.65 + (index % 3) * 0.34, 0, Math.PI * 2);
+          context.fillStyle = arm === 0 ? \`rgba(167,243,107,\${alpha})\` : \`rgba(125,211,252,\${alpha * .7})\`;
+          context.fill();
+        }
+      }
+    };
+
+    const draw = () => {
+      const pointer = pointerRef.current;
+      const px = Math.max(-1, Math.min(1, (pointer.x - width / 2) / Math.max(width, 1)));
+      const py = Math.max(-1, Math.min(1, (pointer.y - height / 2) / Math.max(height, 1)));
+
+      context.clearRect(0, 0, width, height);
+
+      stars.forEach((star) => {
+        const x = ((star.x + px * 1.8 + (reducedMotion ? 0 : time * star.drift)) % 100 + 100) % 100;
+        const y = ((star.y + py * 1.1 + (reducedMotion ? 0 : Math.sin(time * 0.22 + star.phase) * 0.18)) % 100 + 100) % 100;
+        const shimmer = reducedMotion ? 0.44 : 0.34 + Math.sin(time * 1.35 + star.phase) * 0.16;
+        context.beginPath();
+        context.arc((x / 100) * width, (y / 100) * height, star.size, 0, Math.PI * 2);
+        context.fillStyle = "rgba(232,238,240," + Math.max(0.08, shimmer) + ")";
+        context.fill();
+      });
+
+      drawGalaxy();
+
+      const pxCore = width * 0.55 + px * 22;
+      const pyCore = height * 0.52 + py * 15;
+      const coreR = Math.min(width, height) * 0.13;
+
+      const coreGlow = context.createRadialGradient(pxCore, pyCore, 0, pxCore, pyCore, coreR * 2.4);
+      coreGlow.addColorStop(0, "rgba(220,255,178,.22)");
+      coreGlow.addColorStop(.2, "rgba(167,243,107,.13)");
+      coreGlow.addColorStop(.55, "rgba(125,211,252,.035)");
+      coreGlow.addColorStop(1, "rgba(8,10,12,0)");
+      context.fillStyle = coreGlow;
+      context.fillRect(pxCore - coreR * 2.5, pyCore - coreR * 2.5, coreR * 5, coreR * 5);
+
       context.beginPath();
-      context.moveTo(cx - cross, cy);
-      context.lineTo(cx + cross, cy);
-      context.strokeStyle = "rgba(125,211,252,.045)";
+      context.arc(pxCore, pyCore, coreR, 0, Math.PI * 2);
+      context.strokeStyle = "rgba(167,243,107,.22)";
       context.lineWidth = 1;
       context.stroke();
 
-      const vertical = base * 1.05;
-      context.beginPath();
-      context.moveTo(cx, cy - vertical);
-      context.lineTo(cx, cy + vertical);
-      context.strokeStyle = "rgba(167,243,107,.04)";
-      context.stroke();
-
-      const sunRadius = base * 0.32;
-      const glow = context.createRadialGradient(cx, cy, sunRadius * .35, cx, cy, sunRadius * 2.2);
-      glow.addColorStop(0, "rgba(231,255,202,.35)");
-      glow.addColorStop(.22, "rgba(167,243,107,.16)");
-      glow.addColorStop(.58, "rgba(125,211,252,.045)");
-      glow.addColorStop(1, "rgba(8,10,12,0)");
-      context.fillStyle = glow;
-      context.fillRect(cx - base * 2.2, cy - base * 2.2, base * 4.4, base * 4.4);
-
-      const sun = context.createRadialGradient(cx - sunRadius * .33, cy - sunRadius * .4, sunRadius * .05, cx, cy, sunRadius);
-      sun.addColorStop(0, "#f8ffe8");
-      sun.addColorStop(.35, "#d9ffb1");
-      sun.addColorStop(.8, "#a7f36b");
-      sun.addColorStop(1, "#69a848");
-      context.beginPath();
-      context.arc(cx, cy, sunRadius, 0, Math.PI * 2);
-      context.fillStyle = sun;
-      context.shadowColor = "rgba(167,243,107,.62)";
-      context.shadowBlur = 44;
-      context.fill();
-      context.shadowBlur = 0;
-
       if (!reducedMotion) time += 0.006;
-      animationFrame = window.requestAnimationFrame(draw);
+      frame = window.requestAnimationFrame(draw);
     };
 
     resize();
-    const resizeObserver = new ResizeObserver(resize);
-    resizeObserver.observe(canvas);
+    const observer = new ResizeObserver(resize);
+    observer.observe(canvas);
     draw();
 
     return () => {
-      window.cancelAnimationFrame(animationFrame);
-      resizeObserver.disconnect();
+      window.cancelAnimationFrame(frame);
+      observer.disconnect();
     };
   }, []);
 
@@ -522,20 +537,15 @@ function GalaxyLanding({ onEnter }: { onEnter: () => void }) {
     const onMove = (event: MouseEvent) => {
       const bounds = canvasRef.current?.getBoundingClientRect();
       if (!bounds) return;
-      pointerRef.current = {
-        x: event.clientX - bounds.left,
-        y: event.clientY - bounds.top,
-      };
+      pointerRef.current = { x: event.clientX - bounds.left, y: event.clientY - bounds.top };
     };
-
     window.addEventListener("mousemove", onMove, { passive: true });
     return () => window.removeEventListener("mousemove", onMove);
   }, []);
 
   useEffect(() => {
     document.body.classList.add("galaxy-lock");
-    const timer = window.setTimeout(() => onEnterRef.current(), 5600);
-
+    const timer = window.setTimeout(() => onEnterRef.current(), 5000);
     return () => {
       document.body.classList.remove("galaxy-lock");
       window.clearTimeout(timer);
@@ -544,119 +554,68 @@ function GalaxyLanding({ onEnter }: { onEnter: () => void }) {
 
   return (
     <motion.div
-      className="galaxy-landing astral-landing"
+      className="galaxy-landing clean-astral"
       initial={{ opacity: 1 }}
-      exit={{ opacity: 0, scale: 1.045, filter: "blur(14px)" }}
-      transition={{ duration: 0.95, ease: [0.76, 0, 0.24, 1] }}
+      exit={{ opacity: 0, scale: 1.02, filter: "blur(9px)" }}
+      transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
     >
       <canvas ref={canvasRef} className="galaxy-canvas" aria-hidden="true" />
-      <div className="astral-noise" aria-hidden="true" />
-      <div className="astral-vignette" aria-hidden="true" />
-      <div className="astral-grid" aria-hidden="true" />
-      <div className="astral-scan" aria-hidden="true" />
+      <div className="clean-astral-noise" aria-hidden="true" />
+      <div className="clean-astral-vignette" aria-hidden="true" />
+      <div className="clean-astral-grid" aria-hidden="true" />
 
-      <header className="astral-topbar">
-        <div className="astral-brand">
-          <span className="astral-brand-core">SB</span>
-          <span><b>SHREYASH BHOSALE</b><small>JAVA / SYSTEMS / AI</small></span>
-        </div>
-        <div className="astral-live"><i /> SYSTEM ONLINE <small>ENTRY 01 / 05</small></div>
+      <header className="clean-topbar">
+        <div className="clean-brand"><span className="clean-brand-mark">SB</span><span><b>SHREYASH BHOSALE</b><small>JAVA / SYSTEMS / AI</small></span></div>
+        <div className="clean-status"><i /> SYSTEM ONLINE <small>PORTFOLIO / 01</small></div>
       </header>
 
-      <aside className="astral-rail">
-        <span className="astral-rail-caption">FIELD INDEX</span>
-        {[
-          ["01", "CORE"],
-          ["02", "BACKEND"],
-          ["03", "AI"],
-          ["04", "WORK"],
-          ["05", "CONTACT"],
-        ].map(([number, label], index) => (
-          <div key={number} className={"astral-rail-item " + (index === 0 ? "is-active" : "")}>
-            <small>{number}</small><span>{label}</span>
-          </div>
-        ))}
-        <span className="astral-rail-line" />
-      </aside>
+      <div className="clean-left">
+        <span className="clean-kicker"><i /> PERSONAL SYSTEM / LIVE</span>
+        <h1>BUILDING<br /><em>USEFUL.</em><br /><span>SYSTEMS.</span></h1>
+        <p>Java full-stack engineering · Spring Boot · practical AI.</p>
+        <div className="clean-rule"><span>DESIGNED TO SHIP</span><i /><b>IDEA → ARCHITECTURE → DEPLOYMENT</b></div>
+      </div>
 
-      <div className="astral-hero-copy">
-        <span className="astral-kicker"><i /> PERSONAL SYSTEM / LIVE</span>
-        <h1>BUILD.<br /><em>BREAK.</em><br /><span>EVOLVE.</span></h1>
-        <p>Java full-stack engineering · Spring Boot · practical AI</p>
-        <div className="astral-signature">
-          <span>DESIGNED TO SHIP</span><i /><b>FROM IDEA → DEPLOYMENT</b>
+      <div className="clean-galaxy" aria-hidden="true">
+        <div className="clean-galaxy-halo" />
+        <div className="clean-galaxy-disc" />
+        <div className="clean-galaxy-ring clean-galaxy-ring-1" />
+        <div className="clean-galaxy-ring clean-galaxy-ring-2" />
+        <div className="clean-galaxy-ring clean-galaxy-ring-3" />
+        <div className="clean-galaxy-cross" />
+      </div>
+
+      <div className="clean-profile">
+        <div className="clean-profile-photo">
+          <img src="/images/ShreyasH.jpg" alt="Shreyash Bhosale" />
+          <span />
+        </div>
+        <div className="clean-profile-copy">
+          <small>OPERATOR / SHREYASH</small>
+          <b>BACKEND · AI · SYSTEMS</b>
         </div>
       </div>
 
-      <div className="astral-stage">
-        <div className="astral-stage-frame" aria-hidden="true">
-          <span className="frame-corner frame-tl" />
-          <span className="frame-corner frame-br" />
-          <span className="frame-line frame-left" />
-          <span className="frame-line frame-right" />
-          <span className="frame-axis frame-x" />
-          <span className="frame-axis frame-y" />
-        </div>
-
-        <motion.div className="astral-core-shell" animate={{ y: [-3, 3, -3], scale: [1, 1.015, 1] }} transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut" }}>
-          <div className="astral-core-rings">
-            <span /><span /><span />
-          </div>
-          <div className="astral-core">
-            <span className="astral-core-glow" />
-            <b>SB</b>
-            <small>JAVA + AI</small>
-          </div>
-        </motion.div>
-
-        <motion.div className="astral-orbit astral-orbit-photo" animate={{ rotate: 360 }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }}>
-          <motion.div className="astral-orbit-photo-body" animate={{ rotate: -360 }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }}>
-            <div className="astral-photo">
-              <img src="/images/ShreyasH.jpg" alt="Shreyash Bhosale" />
-              <span className="astral-photo-ring" />
-            </div>
-            <span className="astral-photo-tag">OPERATOR / SB</span>
-          </motion.div>
-        </motion.div>
-
-        <motion.div className="astral-orbit astral-orbit-api" animate={{ rotate: -360 }} transition={{ duration: 26, repeat: Infinity, ease: "linear" }}>
-          <div className="astral-satellite astral-satellite-api"><small>01</small><b>API</b><span>SPRING BOOT</span></div>
-        </motion.div>
-        <motion.div className="astral-orbit astral-orbit-ai" animate={{ rotate: 360 }} transition={{ duration: 32, repeat: Infinity, ease: "linear", delay: 0.5 }}>
-          <div className="astral-satellite astral-satellite-ai"><small>02</small><b>AI</b><span>GEMINI</span></div>
-        </motion.div>
-        <motion.div className="astral-orbit astral-orbit-work" animate={{ rotate: -360 }} transition={{ duration: 38, repeat: Infinity, ease: "linear", delay: 1 }}>
-          <div className="astral-satellite astral-satellite-work"><small>03</small><b>WORK</b><span>SHIP / REPEAT</span></div>
-        </motion.div>
-
-        <div className="astral-cross astral-cross-one" />
-        <div className="astral-cross astral-cross-two" />
-        <div className="astral-target"><span /><b>SCAN / CORE</b></div>
-
-        <div className="astral-data astral-data-top">
-          <small>LATENCY</small><b>014 ms</b><span>STABLE</span>
-        </div>
-        <div className="astral-data astral-data-bottom">
-          <small>STACK</small><b>JAVA · SQL · DOCKER</b><span>READY</span>
-        </div>
+      <div className="clean-enter">
+        <span className="clean-enter-kicker">PORTFOLIO / ENTER</span>
+        <h2>Step inside<br /><em>the system.</em></h2>
+        <p>An interactive portfolio built around Java, Spring Boot, practical AI, and the work behind the screen.</p>
+        <button onClick={onEnter}><span>ENTER PORTFOLIO</span><b>↗</b></button>
       </div>
 
-      <div className="astral-about">
-        <span className="astral-about-kicker">THE OPERATOR</span>
-        <h2>Software is<br /><em>the system around it.</em></h2>
-        <p>I build backend-heavy products, practical AI features, and systems that are meant to survive beyond the demo.</p>
-        <button className="astral-enter" onClick={onEnter}><span>ENTER PORTFOLIO</span><b>↗</b></button>
+      <div className="clean-corners" aria-hidden="true">
+        <span className="cc-tl" /><span className="cc-tr" /><span className="cc-bl" /><span className="cc-br" />
       </div>
 
-      <div className="astral-status">
-        <div className="astral-status-head"><span>BOOT SEQUENCE</span><b>READY</b></div>
-        <div className="astral-status-track"><i /></div>
-        <div className="astral-status-meta"><span>ORBITAL FIELD / CALIBRATED</span><span>56.0 SEC</span></div>
+      <div className="clean-telemetry">
+        <div><span>FIELD</span><b>CALIBRATED</b></div>
+        <div><span>CORE</span><b>JAVA + AI</b></div>
+        <div><span>ENTRY</span><b>AUTOMATIC</b></div>
       </div>
 
-      <div className="astral-bottom">
-        <span><i /> MOVE CURSOR THROUGH THE FIELD</span>
-        <span>SCROLL DISABLED · AUTOMATIC ENTRY</span>
+      <div className="clean-bottom">
+        <div className="clean-progress"><span>BOOT SEQUENCE</span><i><b /></i><small>00:05</small></div>
+        <span>MOVE CURSOR TO SHIFT THE FIELD</span>
         <button onClick={onEnter}>SKIP INTRO <b>→</b></button>
       </div>
     </motion.div>
