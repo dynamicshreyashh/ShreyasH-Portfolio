@@ -398,6 +398,8 @@ function SystemsCore({ pointer }: { pointer: { x: number; y: number } }) {
 function GalaxyLanding({ onEnter }: { onEnter: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pointerRef = useRef({ x: 0, y: 0 });
+  const onEnterRef = useRef(onEnter);
+  onEnterRef.current = onEnter;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -405,150 +407,114 @@ function GalaxyLanding({ onEnter }: { onEnter: () => void }) {
     const context = canvas.getContext("2d");
     if (!context) return;
 
-    let frame = 0;
+    let animationFrame = 0;
     let width = 0;
     let height = 0;
     let time = 0;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    const stars = Array.from({ length: 190 }, (_, index) => ({
-      x: (index * 73.17 + 11) % 100,
-      y: (index * 41.83 + 7) % 100,
-      size: 0.35 + (index % 5) * 0.28,
-      phase: index * 0.71,
+    const stars = Array.from({ length: 240 }, (_, index) => ({
+      x: (index * 73.13 + 19) % 100,
+      y: (index * 41.71 + 11) % 100,
+      size: 0.35 + (index % 5) * 0.27,
+      phase: index * 0.61,
     }));
-
-    const planets = [
-      { orbit: 0.23, angle: 1.8, size: 5, speed: 0.22, color: "#7dd3fc" },
-      { orbit: 0.34, angle: 4.1, size: 8, speed: -0.13, color: "#f0b429" },
-      { orbit: 0.49, angle: 0.35, size: 6, speed: 0.09, color: "#fb8f72" },
-      { orbit: 0.65, angle: 2.65, size: 12, speed: -0.052, color: "#c4b5fd" },
-      { orbit: 0.81, angle: 5.15, size: 7, speed: 0.032, color: "#7dd3fc" },
-    ];
 
     const resize = () => {
       const bounds = canvas.getBoundingClientRect();
-      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
       width = bounds.width;
       height = bounds.height;
-      canvas.width = Math.max(1, Math.floor(width * pixelRatio));
-      canvas.height = Math.max(1, Math.floor(height * pixelRatio));
-      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      canvas.width = Math.max(1, Math.floor(width * ratio));
+      canvas.height = Math.max(1, Math.floor(height * ratio));
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
     };
 
     const draw = () => {
       const pointer = pointerRef.current;
       const px = Math.max(-1, Math.min(1, (pointer.x - width / 2) / Math.max(width, 1)));
       const py = Math.max(-1, Math.min(1, (pointer.y - height / 2) / Math.max(height, 1)));
-      const centerX = width * 0.51 + px * 18;
-      const centerY = height * 0.53 + py * 12;
-      const orbitBase = Math.min(width, height) * 0.45;
+      const cx = width * 0.53 + px * 22;
+      const cy = height * 0.51 + py * 14;
+      const base = Math.min(width, height) * 0.38;
 
       context.clearRect(0, 0, width, height);
 
       stars.forEach((star) => {
-        const shimmer = reducedMotion ? 0.55 : 0.42 + Math.sin(time * 1.6 + star.phase) * 0.2;
+        const shimmer = reducedMotion ? 0.48 : 0.36 + Math.sin(time * 1.7 + star.phase) * 0.2;
         context.beginPath();
         context.arc((star.x / 100) * width, (star.y / 100) * height, star.size, 0, Math.PI * 2);
-        context.fillStyle = "rgba(224, 232, 236, " + Math.max(0.12, shimmer) + ")";
+        context.fillStyle = "rgba(232,238,240," + Math.max(0.08, shimmer) + ")";
         context.fill();
       });
 
-      const nebula = context.createRadialGradient(centerX, centerY, 0, centerX, centerY, orbitBase * 0.9);
-      nebula.addColorStop(0, "rgba(255, 206, 120, .10)");
-      nebula.addColorStop(0.35, "rgba(80, 120, 180, .045)");
-      nebula.addColorStop(1, "rgba(5, 9, 28, 0)");
-      context.fillStyle = nebula;
+      const haze = context.createRadialGradient(cx, cy, 0, cx, cy, base * 2.7);
+      haze.addColorStop(0, "rgba(167,243,107,.08)");
+      haze.addColorStop(.35, "rgba(125,211,252,.035)");
+      haze.addColorStop(1, "rgba(8,10,12,0)");
+      context.fillStyle = haze;
       context.fillRect(0, 0, width, height);
 
-      for (let index = 0; index < 6; index += 1) {
-        const orbit = orbitBase * (0.24 + index * 0.14);
+      for (let index = 0; index < 7; index += 1) {
+        const orbit = base * (0.5 + index * 0.14);
         context.beginPath();
-        context.ellipse(centerX, centerY, orbit, orbit * 0.38, -0.09, 0, Math.PI * 2);
-        context.strokeStyle = index === 2 ? "rgba(210, 220, 238, .24)" : "rgba(135, 158, 190, .15)";
-        context.lineWidth = index === 2 ? 1.1 : 0.7;
+        context.ellipse(cx, cy, orbit, orbit * (0.23 + index * 0.015), -0.10, 0, Math.PI * 2);
+        context.strokeStyle = index === 2 ? "rgba(167,243,107,.19)" : "rgba(126,147,171,.11)";
+        context.lineWidth = index === 2 ? 1.15 : 0.75;
         context.setLineDash(index === 2 ? [2, 8] : []);
         context.stroke();
       }
       context.setLineDash([]);
 
-      const sunRadius = Math.min(width, height) * 0.155;
-      const glow = context.createRadialGradient(centerX, centerY, sunRadius * 0.2, centerX, centerY, sunRadius * 2.5);
-      glow.addColorStop(0, "rgba(255, 244, 205, .45)");
-      glow.addColorStop(0.2, "rgba(255, 213, 116, .22)");
-      glow.addColorStop(0.55, "rgba(255, 172, 64, .08)");
-      glow.addColorStop(1, "rgba(255, 170, 60, 0)");
-      context.fillStyle = glow;
-      context.fillRect(0, 0, width, height);
-
-      const sun = context.createRadialGradient(
-        centerX - sunRadius * 0.32,
-        centerY - sunRadius * 0.36,
-        sunRadius * 0.08,
-        centerX,
-        centerY,
-        sunRadius,
-      );
-      sun.addColorStop(0, "#fffef4");
-      sun.addColorStop(0.55, "#fff8dc");
-      sun.addColorStop(0.88, "#ffe8a8");
-      sun.addColorStop(1, "#f6c96d");
+      const cross = base * 1.35;
       context.beginPath();
-      context.arc(centerX, centerY, sunRadius, 0, Math.PI * 2);
+      context.moveTo(cx - cross, cy);
+      context.lineTo(cx + cross, cy);
+      context.strokeStyle = "rgba(125,211,252,.045)";
+      context.lineWidth = 1;
+      context.stroke();
+
+      const vertical = base * 1.05;
+      context.beginPath();
+      context.moveTo(cx, cy - vertical);
+      context.lineTo(cx, cy + vertical);
+      context.strokeStyle = "rgba(167,243,107,.04)";
+      context.stroke();
+
+      const sunRadius = base * 0.32;
+      const glow = context.createRadialGradient(cx, cy, sunRadius * .35, cx, cy, sunRadius * 2.2);
+      glow.addColorStop(0, "rgba(231,255,202,.35)");
+      glow.addColorStop(.22, "rgba(167,243,107,.16)");
+      glow.addColorStop(.58, "rgba(125,211,252,.045)");
+      glow.addColorStop(1, "rgba(8,10,12,0)");
+      context.fillStyle = glow;
+      context.fillRect(cx - base * 2.2, cy - base * 2.2, base * 4.4, base * 4.4);
+
+      const sun = context.createRadialGradient(cx - sunRadius * .33, cy - sunRadius * .4, sunRadius * .05, cx, cy, sunRadius);
+      sun.addColorStop(0, "#f8ffe8");
+      sun.addColorStop(.35, "#d9ffb1");
+      sun.addColorStop(.8, "#a7f36b");
+      sun.addColorStop(1, "#69a848");
+      context.beginPath();
+      context.arc(cx, cy, sunRadius, 0, Math.PI * 2);
       context.fillStyle = sun;
-      context.shadowColor = "rgba(255, 208, 108, .72)";
-      context.shadowBlur = 42;
+      context.shadowColor = "rgba(167,243,107,.62)";
+      context.shadowBlur = 44;
       context.fill();
       context.shadowBlur = 0;
 
-      planets.forEach((planet, index) => {
-        const angle = planet.angle + time * planet.speed;
-        const orbit = orbitBase * planet.orbit;
-        const x = centerX + Math.cos(angle) * orbit;
-        const y = centerY + Math.sin(angle) * orbit * 0.38;
-        const depth = 0.76 + (Math.sin(angle) + 1) * 0.16;
-        const radius = planet.size * depth;
-
-        if (index === 3) {
-          context.beginPath();
-          context.ellipse(x, y, radius * 2.15, radius * 0.58, -0.16, 0, Math.PI * 2);
-          context.strokeStyle = "rgba(218, 201, 255, .48)";
-          context.lineWidth = 1;
-          context.stroke();
-        }
-
-        const planetGlow = context.createRadialGradient(x - radius * 0.35, y - radius * 0.45, 0, x, y, radius * 2.5);
-        planetGlow.addColorStop(0, "rgba(255,255,255,.65)");
-        planetGlow.addColorStop(0.18, planet.color);
-        planetGlow.addColorStop(1, "rgba(0,0,0,0)");
-        context.beginPath();
-        context.arc(x, y, radius * 2.1, 0, Math.PI * 2);
-        context.fillStyle = planetGlow;
-        context.fill();
-
-        context.beginPath();
-        context.arc(x, y, radius, 0, Math.PI * 2);
-        context.fillStyle = planet.color;
-        context.globalAlpha = depth;
-        context.shadowColor = planet.color;
-        context.shadowBlur = index === 3 ? 16 : 9;
-        context.fill();
-        context.globalAlpha = 1;
-        context.shadowBlur = 0;
-      });
-
       if (!reducedMotion) time += 0.006;
-      frame = window.requestAnimationFrame(draw);
+      animationFrame = window.requestAnimationFrame(draw);
     };
 
     resize();
-    const observer = new ResizeObserver(resize);
-    observer.observe(canvas);
+    const resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(canvas);
     draw();
 
     return () => {
-      window.cancelAnimationFrame(frame);
-      observer.disconnect();
+      window.cancelAnimationFrame(animationFrame);
+      resizeObserver.disconnect();
     };
   }, []);
 
@@ -556,86 +522,146 @@ function GalaxyLanding({ onEnter }: { onEnter: () => void }) {
     const onMove = (event: MouseEvent) => {
       const bounds = canvasRef.current?.getBoundingClientRect();
       if (!bounds) return;
-      pointerRef.current = { x: event.clientX - bounds.left, y: event.clientY - bounds.top };
+      pointerRef.current = {
+        x: event.clientX - bounds.left,
+        y: event.clientY - bounds.top,
+      };
     };
+
     window.addEventListener("mousemove", onMove, { passive: true });
     return () => window.removeEventListener("mousemove", onMove);
   }, []);
 
   useEffect(() => {
     document.body.classList.add("galaxy-lock");
-    const timer = window.setTimeout(onEnter, 5200);
+    const timer = window.setTimeout(() => onEnterRef.current(), 5600);
+
     return () => {
       document.body.classList.remove("galaxy-lock");
       window.clearTimeout(timer);
     };
-  }, [onEnter]);
+  }, []);
 
   return (
     <motion.div
-      className="galaxy-landing"
+      className="galaxy-landing astral-landing"
       initial={{ opacity: 1 }}
-      exit={{ opacity: 0, scale: 1.035, filter: "blur(10px)" }}
-      transition={{ duration: 0.85, ease: [0.76, 0, 0.24, 1] }}
-      role="dialog"
-      aria-label="Portfolio introduction"
+      exit={{ opacity: 0, scale: 1.045, filter: "blur(14px)" }}
+      transition={{ duration: 0.95, ease: [0.76, 0, 0.24, 1] }}
     >
       <canvas ref={canvasRef} className="galaxy-canvas" aria-hidden="true" />
-      <div className="galaxy-vignette" aria-hidden="true" />
-      <div className="galaxy-grid" aria-hidden="true" />
-      <div className="galaxy-scan" aria-hidden="true" />
+      <div className="astral-noise" aria-hidden="true" />
+      <div className="astral-vignette" aria-hidden="true" />
+      <div className="astral-grid" aria-hidden="true" />
+      <div className="astral-scan" aria-hidden="true" />
 
-      <div className="galaxy-topbar">
-        <span><i /> SB / SYSTEM BOOT</span>
-        <span>PORTFOLIO / 2026 <b>01</b></span>
-      </div>
+      <header className="astral-topbar">
+        <div className="astral-brand">
+          <span className="astral-brand-core">SB</span>
+          <span><b>SHREYASH BHOSALE</b><small>JAVA / SYSTEMS / AI</small></span>
+        </div>
+        <div className="astral-live"><i /> SYSTEM ONLINE <small>ENTRY 01 / 05</small></div>
+      </header>
 
-      <aside className="galaxy-rail" aria-hidden="true">
-        <div className="galaxy-rail-title">NAVIGATE / SYSTEM</div>
-        {["SUN", "JAVA", "SPRING BOOT", "AI", "SYSTEMS", "CONTACT"].map((item, index) => (
-          <div key={item} className={index === 0 ? "galaxy-rail-item is-active" : "galaxy-rail-item"}>
-            <small>0{index + 1}</small><span>{item}</span>
+      <aside className="astral-rail">
+        <span className="astral-rail-caption">FIELD INDEX</span>
+        {[
+          ["01", "CORE"],
+          ["02", "BACKEND"],
+          ["03", "AI"],
+          ["04", "WORK"],
+          ["05", "CONTACT"],
+        ].map(([number, label], index) => (
+          <div key={number} className={"astral-rail-item " + (index === 0 ? "is-active" : "")}>
+            <small>{number}</small><span>{label}</span>
           </div>
         ))}
+        <span className="astral-rail-line" />
       </aside>
 
-      <div className="galaxy-orbit-readout galaxy-readout-left">
-        <span>ORBITAL FIELD</span><b>ACTIVE</b><i />
-      </div>
-
-      <div className="galaxy-hero-copy">
-        <span className="galaxy-kicker">AN INTERACTIVE PORTFOLIO EXPERIENCE</span>
-        <h1>SHREYAS<br /><em>BHOSALE</em></h1>
-        <p>Java • Spring Boot • AI Engineering</p>
-      </div>
-
-      <div className="galaxy-about">
-        <span className="galaxy-about-line" />
-        <small>ABOUT THE OPERATOR</small>
-        <h2>BUILDING<br /><em>USEFUL SYSTEMS.</em></h2>
-        <p>Backend engineering, practical AI, and products built from idea to deployment.</p>
-        <button className="galaxy-enter" onClick={onEnter}>
-          <span>ENTER PORTFOLIO</span><b>↗</b>
-        </button>
-      </div>
-
-      <div className="galaxy-core-label">
-        <span>01 / CORE</span>
-        <b>JAVA + AI</b>
-      </div>
-
-      <div className="galaxy-bottom">
-        <div className="galaxy-progress">
-          <div><span>AUTOMATIC ENTRY</span><b>00:05</b></div>
-          <i><em /></i>
+      <div className="astral-hero-copy">
+        <span className="astral-kicker"><i /> PERSONAL SYSTEM / LIVE</span>
+        <h1>BUILD.<br /><em>BREAK.</em><br /><span>EVOLVE.</span></h1>
+        <p>Java full-stack engineering · Spring Boot · practical AI</p>
+        <div className="astral-signature">
+          <span>DESIGNED TO SHIP</span><i /><b>FROM IDEA → DEPLOYMENT</b>
         </div>
-        <span>MOVE CURSOR TO EXPLORE THE FIELD</span>
+      </div>
+
+      <div className="astral-stage">
+        <div className="astral-stage-frame" aria-hidden="true">
+          <span className="frame-corner frame-tl" />
+          <span className="frame-corner frame-br" />
+          <span className="frame-line frame-left" />
+          <span className="frame-line frame-right" />
+          <span className="frame-axis frame-x" />
+          <span className="frame-axis frame-y" />
+        </div>
+
+        <motion.div className="astral-core-shell" animate={{ y: [-3, 3, -3], scale: [1, 1.015, 1] }} transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut" }}>
+          <div className="astral-core-rings">
+            <span /><span /><span />
+          </div>
+          <div className="astral-core">
+            <span className="astral-core-glow" />
+            <b>SB</b>
+            <small>JAVA + AI</small>
+          </div>
+        </motion.div>
+
+        <motion.div className="astral-orbit astral-orbit-photo" animate={{ rotate: 360 }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }}>
+          <motion.div className="astral-orbit-photo-body" animate={{ rotate: -360 }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }}>
+            <div className="astral-photo">
+              <img src="/images/ShreyasH.jpg" alt="Shreyash Bhosale" />
+              <span className="astral-photo-ring" />
+            </div>
+            <span className="astral-photo-tag">OPERATOR / SB</span>
+          </motion.div>
+        </motion.div>
+
+        <motion.div className="astral-orbit astral-orbit-api" animate={{ rotate: -360 }} transition={{ duration: 26, repeat: Infinity, ease: "linear" }}>
+          <div className="astral-satellite astral-satellite-api"><small>01</small><b>API</b><span>SPRING BOOT</span></div>
+        </motion.div>
+        <motion.div className="astral-orbit astral-orbit-ai" animate={{ rotate: 360 }} transition={{ duration: 32, repeat: Infinity, ease: "linear", delay: 0.5 }}>
+          <div className="astral-satellite astral-satellite-ai"><small>02</small><b>AI</b><span>GEMINI</span></div>
+        </motion.div>
+        <motion.div className="astral-orbit astral-orbit-work" animate={{ rotate: -360 }} transition={{ duration: 38, repeat: Infinity, ease: "linear", delay: 1 }}>
+          <div className="astral-satellite astral-satellite-work"><small>03</small><b>WORK</b><span>SHIP / REPEAT</span></div>
+        </motion.div>
+
+        <div className="astral-cross astral-cross-one" />
+        <div className="astral-cross astral-cross-two" />
+        <div className="astral-target"><span /><b>SCAN / CORE</b></div>
+
+        <div className="astral-data astral-data-top">
+          <small>LATENCY</small><b>014 ms</b><span>STABLE</span>
+        </div>
+        <div className="astral-data astral-data-bottom">
+          <small>STACK</small><b>JAVA · SQL · DOCKER</b><span>READY</span>
+        </div>
+      </div>
+
+      <div className="astral-about">
+        <span className="astral-about-kicker">THE OPERATOR</span>
+        <h2>Software is<br /><em>the system around it.</em></h2>
+        <p>I build backend-heavy products, practical AI features, and systems that are meant to survive beyond the demo.</p>
+        <button className="astral-enter" onClick={onEnter}><span>ENTER PORTFOLIO</span><b>↗</b></button>
+      </div>
+
+      <div className="astral-status">
+        <div className="astral-status-head"><span>BOOT SEQUENCE</span><b>READY</b></div>
+        <div className="astral-status-track"><i /></div>
+        <div className="astral-status-meta"><span>ORBITAL FIELD / CALIBRATED</span><span>56.0 SEC</span></div>
+      </div>
+
+      <div className="astral-bottom">
+        <span><i /> MOVE CURSOR THROUGH THE FIELD</span>
+        <span>SCROLL DISABLED · AUTOMATIC ENTRY</span>
         <button onClick={onEnter}>SKIP INTRO <b>→</b></button>
       </div>
     </motion.div>
   );
 }
-
 function App() {
   const [activeSection, setActiveSection] = useState("about");
   const [selectedProject, setSelectedProject] = useState(0);
