@@ -394,6 +394,248 @@ function SystemsCore({ pointer }: { pointer: { x: number; y: number } }) {
   return <canvas ref={canvasRef} className="systems-core-canvas" aria-hidden="true" />;
 }
 
+
+function GalaxyLanding({ onEnter }: { onEnter: () => void }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const pointerRef = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    let frame = 0;
+    let width = 0;
+    let height = 0;
+    let time = 0;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const stars = Array.from({ length: 190 }, (_, index) => ({
+      x: (index * 73.17 + 11) % 100,
+      y: (index * 41.83 + 7) % 100,
+      size: 0.35 + (index % 5) * 0.28,
+      phase: index * 0.71,
+    }));
+
+    const planets = [
+      { orbit: 0.23, angle: 1.8, size: 5, speed: 0.22, color: "#7dd3fc" },
+      { orbit: 0.34, angle: 4.1, size: 8, speed: -0.13, color: "#f0b429" },
+      { orbit: 0.49, angle: 0.35, size: 6, speed: 0.09, color: "#fb8f72" },
+      { orbit: 0.65, angle: 2.65, size: 12, speed: -0.052, color: "#c4b5fd" },
+      { orbit: 0.81, angle: 5.15, size: 7, speed: 0.032, color: "#7dd3fc" },
+    ];
+
+    const resize = () => {
+      const bounds = canvas.getBoundingClientRect();
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      width = bounds.width;
+      height = bounds.height;
+      canvas.width = Math.max(1, Math.floor(width * pixelRatio));
+      canvas.height = Math.max(1, Math.floor(height * pixelRatio));
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    };
+
+    const draw = () => {
+      const pointer = pointerRef.current;
+      const px = Math.max(-1, Math.min(1, (pointer.x - width / 2) / Math.max(width, 1)));
+      const py = Math.max(-1, Math.min(1, (pointer.y - height / 2) / Math.max(height, 1)));
+      const centerX = width * 0.51 + px * 18;
+      const centerY = height * 0.53 + py * 12;
+      const orbitBase = Math.min(width, height) * 0.45;
+
+      context.clearRect(0, 0, width, height);
+
+      stars.forEach((star) => {
+        const shimmer = reducedMotion ? 0.55 : 0.42 + Math.sin(time * 1.6 + star.phase) * 0.2;
+        context.beginPath();
+        context.arc((star.x / 100) * width, (star.y / 100) * height, star.size, 0, Math.PI * 2);
+        context.fillStyle = \`rgba(224, 232, 236, \${Math.max(0.12, shimmer)})\`;
+        context.fill();
+      });
+
+      const nebula = context.createRadialGradient(centerX, centerY, 0, centerX, centerY, orbitBase * 0.9);
+      nebula.addColorStop(0, "rgba(255, 206, 120, .10)");
+      nebula.addColorStop(0.35, "rgba(80, 120, 180, .045)");
+      nebula.addColorStop(1, "rgba(5, 9, 28, 0)");
+      context.fillStyle = nebula;
+      context.fillRect(0, 0, width, height);
+
+      for (let index = 0; index < 6; index += 1) {
+        const orbit = orbitBase * (0.24 + index * 0.14);
+        context.beginPath();
+        context.ellipse(centerX, centerY, orbit, orbit * 0.38, -0.09, 0, Math.PI * 2);
+        context.strokeStyle = index === 2 ? "rgba(210, 220, 238, .24)" : "rgba(135, 158, 190, .15)";
+        context.lineWidth = index === 2 ? 1.1 : 0.7;
+        context.setLineDash(index === 2 ? [2, 8] : []);
+        context.stroke();
+      }
+      context.setLineDash([]);
+
+      const sunRadius = Math.min(width, height) * 0.155;
+      const glow = context.createRadialGradient(centerX, centerY, sunRadius * 0.2, centerX, centerY, sunRadius * 2.5);
+      glow.addColorStop(0, "rgba(255, 244, 205, .45)");
+      glow.addColorStop(0.2, "rgba(255, 213, 116, .22)");
+      glow.addColorStop(0.55, "rgba(255, 172, 64, .08)");
+      glow.addColorStop(1, "rgba(255, 170, 60, 0)");
+      context.fillStyle = glow;
+      context.fillRect(0, 0, width, height);
+
+      const sun = context.createRadialGradient(
+        centerX - sunRadius * 0.32,
+        centerY - sunRadius * 0.36,
+        sunRadius * 0.08,
+        centerX,
+        centerY,
+        sunRadius,
+      );
+      sun.addColorStop(0, "#fffef4");
+      sun.addColorStop(0.55, "#fff8dc");
+      sun.addColorStop(0.88, "#ffe8a8");
+      sun.addColorStop(1, "#f6c96d");
+      context.beginPath();
+      context.arc(centerX, centerY, sunRadius, 0, Math.PI * 2);
+      context.fillStyle = sun;
+      context.shadowColor = "rgba(255, 208, 108, .72)";
+      context.shadowBlur = 42;
+      context.fill();
+      context.shadowBlur = 0;
+
+      planets.forEach((planet, index) => {
+        const angle = planet.angle + time * planet.speed;
+        const orbit = orbitBase * planet.orbit;
+        const x = centerX + Math.cos(angle) * orbit;
+        const y = centerY + Math.sin(angle) * orbit * 0.38;
+        const depth = 0.76 + (Math.sin(angle) + 1) * 0.16;
+        const radius = planet.size * depth;
+
+        if (index === 3) {
+          context.beginPath();
+          context.ellipse(x, y, radius * 2.15, radius * 0.58, -0.16, 0, Math.PI * 2);
+          context.strokeStyle = "rgba(218, 201, 255, .48)";
+          context.lineWidth = 1;
+          context.stroke();
+        }
+
+        const planetGlow = context.createRadialGradient(x - radius * 0.35, y - radius * 0.45, 0, x, y, radius * 2.5);
+        planetGlow.addColorStop(0, "rgba(255,255,255,.65)");
+        planetGlow.addColorStop(0.18, planet.color);
+        planetGlow.addColorStop(1, "rgba(0,0,0,0)");
+        context.beginPath();
+        context.arc(x, y, radius * 2.1, 0, Math.PI * 2);
+        context.fillStyle = planetGlow;
+        context.fill();
+
+        context.beginPath();
+        context.arc(x, y, radius, 0, Math.PI * 2);
+        context.fillStyle = planet.color;
+        context.globalAlpha = depth;
+        context.shadowColor = planet.color;
+        context.shadowBlur = index === 3 ? 16 : 9;
+        context.fill();
+        context.globalAlpha = 1;
+        context.shadowBlur = 0;
+      });
+
+      if (!reducedMotion) time += 0.006;
+      frame = window.requestAnimationFrame(draw);
+    };
+
+    resize();
+    const observer = new ResizeObserver(resize);
+    observer.observe(canvas);
+    draw();
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    const onMove = (event: MouseEvent) => {
+      const bounds = canvasRef.current?.getBoundingClientRect();
+      if (!bounds) return;
+      pointerRef.current = { x: event.clientX - bounds.left, y: event.clientY - bounds.top };
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => window.removeEventListener("mousemove", onMove);
+  }, []);
+
+  useEffect(() => {
+    document.body.classList.add("galaxy-lock");
+    const timer = window.setTimeout(onEnter, 5200);
+    return () => {
+      document.body.classList.remove("galaxy-lock");
+      window.clearTimeout(timer);
+    };
+  }, [onEnter]);
+
+  return (
+    <motion.div
+      className="galaxy-landing"
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0, scale: 1.035, filter: "blur(10px)" }}
+      transition={{ duration: 0.85, ease: [0.76, 0, 0.24, 1] }}
+      role="dialog"
+      aria-label="Portfolio introduction"
+    >
+      <canvas ref={canvasRef} className="galaxy-canvas" aria-hidden="true" />
+      <div className="galaxy-vignette" aria-hidden="true" />
+      <div className="galaxy-grid" aria-hidden="true" />
+      <div className="galaxy-scan" aria-hidden="true" />
+
+      <div className="galaxy-topbar">
+        <span><i /> SB / SYSTEM BOOT</span>
+        <span>PORTFOLIO / 2026 <b>01</b></span>
+      </div>
+
+      <aside className="galaxy-rail" aria-hidden="true">
+        <div className="galaxy-rail-title">NAVIGATE / SYSTEM</div>
+        {["SUN", "JAVA", "SPRING BOOT", "AI", "SYSTEMS", "CONTACT"].map((item, index) => (
+          <div key={item} className={index === 0 ? "galaxy-rail-item is-active" : "galaxy-rail-item"}>
+            <small>0{index + 1}</small><span>{item}</span>
+          </div>
+        ))}
+      </aside>
+
+      <div className="galaxy-orbit-readout galaxy-readout-left">
+        <span>ORBITAL FIELD</span><b>ACTIVE</b><i />
+      </div>
+
+      <div className="galaxy-hero-copy">
+        <span className="galaxy-kicker">AN INTERACTIVE PORTFOLIO EXPERIENCE</span>
+        <h1>SHREYAS<br /><em>BHOSALE</em></h1>
+        <p>Java • Spring Boot • AI Engineering</p>
+      </div>
+
+      <div className="galaxy-about">
+        <span className="galaxy-about-line" />
+        <small>ABOUT THE OPERATOR</small>
+        <h2>BUILDING<br /><em>USEFUL SYSTEMS.</em></h2>
+        <p>Backend engineering, practical AI, and products built from idea to deployment.</p>
+        <button className="galaxy-enter" onClick={onEnter}>
+          <span>ENTER PORTFOLIO</span><b>↗</b>
+        </button>
+      </div>
+
+      <div className="galaxy-core-label">
+        <span>01 / CORE</span>
+        <b>JAVA + AI</b>
+      </div>
+
+      <div className="galaxy-bottom">
+        <div className="galaxy-progress">
+          <div><span>AUTOMATIC ENTRY</span><b>00:05</b></div>
+          <i><em /></i>
+        </div>
+        <span>MOVE CURSOR TO EXPLORE THE FIELD</span>
+        <button onClick={onEnter}>SKIP INTRO <b>→</b></button>
+      </div>
+    </motion.div>
+  );
+}
+
 function App() {
   const [activeSection, setActiveSection] = useState("about");
   const [selectedProject, setSelectedProject] = useState(0);
@@ -402,6 +644,7 @@ function App() {
   const [progress, setProgress] = useState(0);
   const [pointer, setPointer] = useState({ x: 0, y: 0 });
   const [soundOn, setSoundOn] = useState(false);
+  const [showGalaxyLanding, setShowGalaxyLanding] = useState(true);
   const [navTransition, setNavTransition] = useState<string | null>(null);
   const navTimerRef = useRef<number | null>(null);
   const navClearTimerRef = useRef<number | null>(null);
@@ -472,6 +715,7 @@ function App() {
   const activeProject = projects[selectedProject];
 
   return (
+    <AnimatePresence>{showGalaxyLanding && <GalaxyLanding onEnter={() => setShowGalaxyLanding(false)} />}</AnimatePresence>
     <div
       className="portfolio-shell"
       onMouseMove={handlePointerMove}
