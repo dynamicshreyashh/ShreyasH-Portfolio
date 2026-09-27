@@ -862,8 +862,6 @@ function App() {
       </main>
 
       <footer className="footer page-width"><span>© {new Date().getFullYear()} SHREYASH BHOSALE</span><span>JAVA / SYSTEMS / AI</span><a href="#home" onClick={(event) => { event.preventDefault(); scrollTo("home"); }}>back to top <ArrowUpRight size={14} /></a></footer>
-    </div>
-  </>
 
       <AnimatePresence>
         {soundOn && (
@@ -886,6 +884,7 @@ function App() {
         )}
       </AnimatePresence>
     </div>
+    </>
   );
 }
 
