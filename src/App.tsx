@@ -785,6 +785,22 @@ function App() {
               <div className="visual-header"><span><span className="live-dot" /> observatory / live</span><span>signal 01 · now</span></div>
               <div className="hero-universe">
                 <LandingUniverse pointer={pointer} />
+                <motion.div
+                  className="universe-portrait-orbit"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+                  aria-hidden="true"
+                >
+                  <motion.div
+                    className="universe-portrait-wrap"
+                    animate={{ rotate: -360 }}
+                    transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+                  >
+                    <span className="universe-portrait-halo" />
+                    <img src="/images/ShreyasH.jpg" alt="" />
+                    <span className="universe-portrait-signal">OPERATOR / SB</span>
+                  </motion.div>
+                </motion.div>
                 <div className="universe-core"><span className="universe-core-aura" /><b>SB</b><small>JAVA / AI</small></div>
                 <span className="universe-label universe-label-one">01 / API</span>
                 <span className="universe-label universe-label-two">02 / AI</span>

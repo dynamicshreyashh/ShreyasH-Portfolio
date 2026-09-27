@@ -332,3 +332,108 @@ body.galaxy-lock { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .galaxy-progress > i em { animation-duration: .01ms; }
 }
+
+/* Operator portrait: part of the existing orbital field */
+.universe-portrait-orbit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 255px;
+  height: 145px;
+  margin-left: -127.5px;
+  margin-top: -72.5px;
+  z-index: 3;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+}
+.universe-portrait-orbit::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(167, 243, 107, .12);
+  border-radius: 50%;
+  transform: rotate(-8deg);
+}
+.universe-portrait-wrap {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 58px;
+  height: 58px;
+  margin-left: -29px;
+  margin-top: -29px;
+  border: 1px solid rgba(232, 238, 240, .58);
+  border-radius: 50%;
+  background: #101619;
+  padding: 3px;
+  box-shadow:
+    0 0 0 5px rgba(125, 211, 252, .055),
+    0 0 26px rgba(167, 243, 107, .18),
+    0 12px 30px rgba(0, 0, 0, .4);
+  overflow: visible;
+}
+.universe-portrait-wrap::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border: 1px solid rgba(167, 243, 107, .22);
+  border-radius: 50%;
+  border-top-color: rgba(125, 211, 252, .65);
+  transform: rotate(28deg);
+}
+.universe-portrait-wrap img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center 18%;
+  border-radius: 50%;
+  filter: grayscale(.18) contrast(1.06) saturate(.82);
+}
+.universe-portrait-halo {
+  position: absolute;
+  inset: -13px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(167, 243, 107, .12), transparent 67%);
+  filter: blur(5px);
+  z-index: -1;
+}
+.universe-portrait-signal {
+  position: absolute;
+  left: 71px;
+  top: 16px;
+  min-width: 92px;
+  padding: 5px 7px;
+  border: 1px solid rgba(232, 238, 240, .13);
+  background: rgba(8, 13, 16, .72);
+  color: #87959b;
+  font: 7px var(--mono);
+  letter-spacing: .1em;
+  white-space: nowrap;
+  backdrop-filter: blur(5px);
+}
+.universe-portrait-signal::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin: 0 5px 1px 0;
+  border-radius: 50%;
+  background: var(--mint);
+  box-shadow: 0 0 8px var(--mint);
+}
+@media (max-width: 760px) {
+  .universe-portrait-orbit {
+    width: 195px;
+    height: 112px;
+    margin-left: -97.5px;
+    margin-top: -56px;
+  }
+  .universe-portrait-wrap {
+    width: 50px;
+    height: 50px;
+    margin-left: -25px;
+    margin-top: -25px;
+  }
+  .universe-portrait-signal { left: 60px; min-width: 76px; font-size: 6px; }
+}
