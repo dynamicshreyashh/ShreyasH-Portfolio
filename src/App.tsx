@@ -475,7 +475,7 @@ function GalaxyLanding({ onEnter }: { onEnter: () => void }) {
           const alpha = 0.08 + (1 - t) * 0.18;
           context.beginPath();
           context.arc(x, y, 0.65 + (index % 3) * 0.34, 0, Math.PI * 2);
-          context.fillStyle = arm === 0 ? \`rgba(167,243,107,\${alpha})\` : \`rgba(125,211,252,\${alpha * .7})\`;
+          context.fillStyle = arm === 0 ? "rgba(167,243,107," + alpha + ")" : "rgba(125,211,252," + alpha * .7 + ")";
           context.fill();
         }
       }
