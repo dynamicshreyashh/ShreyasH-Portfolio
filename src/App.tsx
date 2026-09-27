@@ -630,6 +630,11 @@ function App() {
   const [pointer, setPointer] = useState({ x: 0, y: 0 });
   const [soundOn, setSoundOn] = useState(false);
   const [showGalaxyLanding, setShowGalaxyLanding] = useState(true);
+
+  const enterPortfolio = () => {
+    setSoundOn(true);
+    setShowGalaxyLanding(false);
+  };
   const [navTransition, setNavTransition] = useState<string | null>(null);
   const navTimerRef = useRef<number | null>(null);
   const navClearTimerRef = useRef<number | null>(null);
@@ -701,7 +706,7 @@ function App() {
 
   return (
     <>
-      <AnimatePresence>{showGalaxyLanding && <GalaxyLanding onEnter={() => setShowGalaxyLanding(false)} />}</AnimatePresence>
+      <AnimatePresence>{showGalaxyLanding && <GalaxyLanding onEnter={enterPortfolio} />}</AnimatePresence>
     <div
       className="portfolio-shell"
       onMouseMove={handlePointerMove}
@@ -870,7 +875,7 @@ function App() {
             <iframe
               className="music-iframe"
               title="Portfolio theme music"
-              src="https://www.youtube-nocookie.com/embed/Z5D-35D7eXE?autoplay=1&loop=1&playlist=Z5D-35D7eXE&controls=0&modestbranding=1&rel=0&playsinline=1"
+              src="https://www.youtube-nocookie.com/embed/Z5D-35D7eXE?autoplay=1&loop=1&playlist=Z5D-35D7eXE&controls=0&modestbranding=1&rel=0&playsinline=1&mute=0"
               allow="autoplay; encrypted-media"
             />
             <span className="music-eq"><i /><i /><i /><i /></span>
