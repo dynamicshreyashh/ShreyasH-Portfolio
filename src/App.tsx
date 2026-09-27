@@ -783,14 +783,14 @@ function App() {
                   >
                     <span className="universe-portrait-halo" />
                     <img src="/images/ShreyasH.jpg" alt="" />
-                    <span className="universe-portrait-signal">OPERATOR / SB</span>
+                    <span className="universe-portrait-signal">OPERATOR / SHREYASH</span>
                   </motion.div>
                 </motion.div>
                 <div className="universe-core"><span className="universe-core-aura" /><b>SB</b><small>JAVA / AI</small></div>
                 <span className="universe-label universe-label-one">01 / API</span>
                 <span className="universe-label universe-label-two">02 / AI</span>
                 <span className="universe-label universe-label-three">03 / SYSTEMS</span>
-                <div className="universe-avatar"><img src="/images/ShreyasH.jpg" alt="Shreyash Bhosale" /><span>operator / shreyash</span></div>
+                
                 <div className="universe-crosshair" aria-hidden="true" />
               </div>
               <div className="universe-footer"><span><i /> interactive field</span><span>move your cursor through the system</span></div>
