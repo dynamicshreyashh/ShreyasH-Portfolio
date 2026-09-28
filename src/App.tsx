@@ -36,6 +36,9 @@ type Project = {
   image?: string;
   accent: string;
   code: string[];
+  problem: string;
+  architecture: string[];
+  decisions: string[];
 };
 
 const navLinks = [
@@ -56,6 +59,9 @@ const projects: Project[] = [
     href: "https://github.com/dynamicshreyashh/Workqueue-redisflow",
     accent: "#a7f36b",
     code: ["producer.publish(job)", "stream.claim(worker)", "retry.orDeadLetter(job)"],
+    problem: "Process background jobs asynchronously without silently losing failed work.",
+    architecture: ["Client / API", "Spring Boot Producer", "Redis Streams", "Consumer Group", "Worker Threads", "Retry / DLQ"],
+    decisions: ["Redis Streams for acknowledgement", "Consumer groups for worker coordination", "Pluggable handlers for new job types"],
   },
   {
     title: "Smart Email Assistant",
@@ -68,6 +74,9 @@ const projects: Project[] = [
     image: "/images/smart-email.png",
     accent: "#7dd3fc",
     code: ["compose.detected()", "reply = gemini.generate()", "draft.insert(reply)"],
+    problem: "Generate useful Gmail replies without exposing the Gemini credential in the browser.",
+    architecture: ["Gmail", "Chrome Extension", "Spring Boot API", "Gemini API", "Reply / Draft"],
+    decisions: ["Gemini calls stay behind the backend", "Manifest V3 content-script integration", "Generation stays separate from Gmail UI"],
   },
   {
     title: "URL Shortener",
@@ -79,6 +88,9 @@ const projects: Project[] = [
     href: "https://github.com/dynamicshreyashh/url_shortner_app",
     accent: "#f0b429",
     code: ["url = shorten(input)", "redirect.track(click)", "deploy.verify(push)"],
+    problem: "Create short links with expiry, redirects, and click statistics in one small service.",
+    architecture: ["Browser", "Vanilla JS", "Spring Boot API", "JPA / H2", "Redirect + Stats"],
+    decisions: ["REST endpoints for the link lifecycle", "JPA repository/service separation", "CI validation plus Docker deployment"],
   },
   {
     title: "CareerConnect",
@@ -91,6 +103,9 @@ const projects: Project[] = [
     image: "/images/careerconnect.png",
     accent: "#c4b5fd",
     code: ["role = recruiter.post()", "candidate = student.apply()", "status.sync()"],
+    problem: "Connect students and recruiters through structured application workflows.",
+    architecture: ["Student UI", "Recruiter UI", "Node / Express API", "MongoDB", "JWT / Notifications"],
+    decisions: ["Separate student and recruiter flows", "JWT-based authentication", "Application status and notification workflows"],
   },
 ];
 
@@ -844,6 +859,28 @@ function App() {
                   <div className="feature-visual">{activeProject.image ? <img src={activeProject.image} alt={activeProject.title + " preview"} /> : <div className="code-visual"><div className="code-window-bar"><span /><span /><span /><b>worker.ts</b></div>{activeProject.code.map((line, index) => <div className="code-line" key={line}><small>0{index + 1}</small><code><i>{line.split(".")[0]}</i>{line.includes(".") ? "." + line.split(".").slice(1).join(".") : ""}</code></div>)}</div>}<div className="feature-glow" /></div>
                   <div className="feature-body"><div><h3>{activeProject.title}</h3><p className="feature-description">{activeProject.description}</p><p className="feature-detail">{activeProject.detail}</p></div><a className="round-link" href={activeProject.href} target="_blank" rel="noreferrer" aria-label={"Open " + activeProject.title + " on GitHub"}><ExternalLink size={18} /></a></div>
                   <div className="feature-footer"><div className="tag-list">{activeProject.tags.map((tag) => <span key={tag}>{tag}</span>)}</div><div className="metric-list">{activeProject.metrics.map((metric) => <span key={metric}><Check size={13} /> {metric}</span>)}</div></div>
+                  <div className="engineering-brief">
+                    <div className="brief-panel brief-problem">
+                      <div className="brief-panel-head"><span>01</span><b>THE PROBLEM</b></div>
+                      <p>{activeProject.problem}</p>
+                    </div>
+                    <div className="brief-panel brief-architecture">
+                      <div className="brief-panel-head"><span>02</span><b>ARCHITECTURE / FLOW</b><small>SELECTED SYSTEM</small></div>
+                      <div className="architecture-flow" aria-label={activeProject.title + " architecture flow"}>
+                        {activeProject.architecture.map((step, index) => (
+                          <div className="architecture-step" key={step}>
+                            <span>{String(index + 1).padStart(2, "0")}</span>
+                            <b>{step}</b>
+                            {index < activeProject.architecture.length - 1 && <ChevronRight size={13} />}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="brief-panel brief-decisions">
+                      <div className="brief-panel-head"><span>03</span><b>ENGINEERING DECISIONS</b></div>
+                      <div className="decision-list">{activeProject.decisions.map((decision) => <span key={decision}><i />{decision}</span>)}</div>
+                    </div>
+                  </div>
                 </motion.article>
               </AnimatePresence>
             </div>
