@@ -1429,3 +1429,62 @@ body.galaxy-lock { overflow: hidden; }
   .architecture-flow { overflow-x: auto; max-width: 100%; scrollbar-width: thin; }
   .architecture-step { min-width: 98px; }
 }
+
+/* Fix project engineering brief layout so the architecture stays inside its panel. */
+.engineering-brief {
+  grid-template-columns: minmax(190px, .72fr) minmax(0, 1.55fr) minmax(190px, .9fr);
+  align-items: stretch;
+}
+.brief-panel { min-width: 0; overflow: hidden; }
+.brief-architecture { min-width: 0; overflow: hidden; }
+.architecture-flow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
+  width: 100%;
+  padding: 1px 0;
+}
+.architecture-step {
+  min-width: 0;
+  width: 100%;
+  padding: 9px 10px 8px;
+}
+.architecture-step > b {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.architecture-step > svg {
+  right: 6px;
+  top: 50%;
+  transform: translate(50%, -50%);
+}
+.architecture-step:nth-child(3n) > svg { display: none; }
+
+@media (max-width: 1180px) {
+  .engineering-brief {
+    grid-template-columns: minmax(170px, .72fr) minmax(0, 1.35fr) minmax(170px, .9fr);
+  }
+  .architecture-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .architecture-step:nth-child(3n) > svg { display: block; }
+  .architecture-step:nth-child(2n) > svg { display: none; }
+}
+@media (max-width: 1000px) {
+  .engineering-brief { grid-template-columns: 1fr 1fr; }
+  .brief-architecture { grid-column: span 2; }
+  .architecture-flow { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .architecture-step:nth-child(2n) > svg,
+  .architecture-step:nth-child(3n) > svg { display: block; }
+  .architecture-step:nth-child(3n) > svg { display: none; }
+}
+@media (max-width: 760px) {
+  .engineering-brief { grid-template-columns: 1fr; }
+  .brief-architecture { grid-column: auto; }
+  .architecture-flow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow-x: visible;
+  }
+  .architecture-step:nth-child(2n) > svg { display: none; }
+  .architecture-step:nth-child(3n) > svg { display: block; }
+  .architecture-step:nth-child(3n) > svg { display: none; }
+}
