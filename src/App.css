@@ -1318,3 +1318,114 @@ body.galaxy-lock { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .clean-progress i b { animation-duration:.01ms; }
 }
+
+
+/* Engineering brief — turns project selection into a compact architecture readout */
+.engineering-brief {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: .72fr 1.55fr .9fr;
+  border-top: 1px solid var(--line);
+}
+.brief-panel {
+  min-width: 0;
+  padding: 17px 16px 16px;
+  border-right: 1px solid var(--line);
+  background: rgba(8,10,12,.22);
+}
+.brief-panel:last-child { border-right: 0; }
+.brief-panel-head {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin-bottom: 16px;
+  color: #59666d;
+  font: 8px var(--mono);
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+.brief-panel-head span { color: var(--project-accent); }
+.brief-panel-head b { color: #7a878c; font-weight: 500; }
+.brief-panel-head small {
+  margin-left: auto;
+  color: #445158;
+  font: 6px var(--mono);
+  letter-spacing: .09em;
+}
+.brief-problem p {
+  margin: 0;
+  color: #a1adb1;
+  font: 12px/1.65 var(--display);
+}
+.architecture-flow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: max-content;
+  padding: 2px 0 5px;
+}
+.architecture-step {
+  position: relative;
+  min-width: 82px;
+  padding: 9px 9px 8px;
+  border: 1px solid rgba(220,232,237,.1);
+  background: rgba(14,18,21,.66);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.architecture-step > span {
+  color: #4d5960;
+  font: 7px var(--mono);
+}
+.architecture-step > b {
+  color: #99a6aa;
+  font: 500 9px/1.2 var(--display);
+  white-space: normal;
+}
+.architecture-step > svg {
+  position: absolute;
+  right: -11px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--project-accent);
+  z-index: 2;
+  background: var(--surface);
+}
+.architecture-step:hover {
+  border-color: color-mix(in srgb, var(--project-accent) 45%, transparent);
+  background: color-mix(in srgb, var(--project-accent) 5%, var(--surface));
+}
+.decision-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.decision-list span {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  color: #758188;
+  font: 9px/1.45 var(--mono);
+}
+.decision-list i {
+  flex: 0 0 auto;
+  width: 4px;
+  height: 4px;
+  margin-top: 4px;
+  border-radius: 50%;
+  background: var(--project-accent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--project-accent) 70%, transparent);
+}
+@media (max-width: 1000px) {
+  .engineering-brief { grid-template-columns: 1fr 1fr; }
+  .brief-architecture { grid-column: span 2; border-right: 0; border-top: 1px solid var(--line); }
+}
+@media (max-width: 760px) {
+  .engineering-brief { grid-template-columns: 1fr; }
+  .brief-panel { border-right: 0; border-bottom: 1px solid var(--line); }
+  .brief-panel:last-child { border-bottom: 0; }
+  .brief-architecture { grid-column: auto; border-top: 0; }
+  .architecture-flow { overflow-x: auto; max-width: 100%; scrollbar-width: thin; }
+  .architecture-step { min-width: 98px; }
+}
